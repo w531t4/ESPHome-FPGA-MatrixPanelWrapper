@@ -3,7 +3,7 @@ esphome:
   friendly_name: Matrix Display
 
 external_components:
-  - source: github://TillFleisch/ESPHome-HUB75-MatrixDisplayWrapper@main
+  - source: github://w531t4/ESPHome-FPGA-MatrixDisplayWrapper@main
 
 esp32:
   board: esp32dev
@@ -17,7 +17,7 @@ font:
     size: 10
 
 display:
-  - platform: hub75_matrix_display
+  - platform: fpga_matrix_display
     id: matrix
     width: 64
     height: 32
@@ -26,12 +26,12 @@ display:
       it.print(0, 0, id(roboto), "Hello World!");
 
 switch:
-  - platform: hub75_matrix_display
+  - platform: fpga_matrix_display
     matrix_id: matrix
     name: "Power"
     id: power
 
 number:
-  - platform: hub75_matrix_display
+  - platform: fpga_matrix_display
     matrix_id: matrix
     name: "Brightness"

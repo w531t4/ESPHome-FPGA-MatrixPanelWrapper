@@ -7,7 +7,7 @@
 #include "esphome/core/component.h"
 #include "esphome/components/display/display_buffer.h"
 
-#include "ESP32-HUB75-MatrixPanel-I2S-DMA.h"
+#include "matrix_panel_fpga.hpp"
 
 namespace esphome
 {
@@ -105,64 +105,29 @@ namespace esphome
                 return this->initial_brightness_;
             }
 
-            void set_pins(InternalGPIOPin *R1_pin, InternalGPIOPin *G1_pin, InternalGPIOPin *B1_pin, InternalGPIOPin *R2_pin, InternalGPIOPin *G2_pin, InternalGPIOPin *B2_pin, InternalGPIOPin *A_pin, InternalGPIOPin *B_pin, InternalGPIOPin *C_pin, InternalGPIOPin *D_pin, InternalGPIOPin *E_pin, InternalGPIOPin *LAT_pin, InternalGPIOPin *OE_pin, InternalGPIOPin *CLK_pin)
+            void set_pins(
+                             InternalGPIOPin *SPI_CE_pin,
+                             InternalGPIOPin *SPI_CLK_pin,
+                             InternalGPIOPin *SPI_MOSI_pin
+                        )
             {
                 this->mxconfig_.gpio = {
-                    static_cast<int8_t>(R1_pin->get_pin()),
-                    static_cast<int8_t>(G1_pin->get_pin()),
-                    static_cast<int8_t>(B1_pin->get_pin()),
-                    static_cast<int8_t>(R2_pin->get_pin()),
-                    static_cast<int8_t>(G2_pin->get_pin()),
-                    static_cast<int8_t>(B2_pin->get_pin()),
-                    static_cast<int8_t>(A_pin->get_pin()),
-                    static_cast<int8_t>(B_pin->get_pin()),
-                    static_cast<int8_t>(C_pin->get_pin()),
-                    static_cast<int8_t>(D_pin->get_pin()),
-                    static_cast<int8_t>(E_pin != NULL ? E_pin->get_pin() : -1), // Set the e pin to -1 as required by the library if it is not used
-                    static_cast<int8_t>(LAT_pin->get_pin()),
-                    static_cast<int8_t>(OE_pin->get_pin()),
-                    static_cast<int8_t>(CLK_pin->get_pin())};
-            }
+                    static_cast<int8_t>(SPI_CE_pin->get_pin()),
+                    static_cast<int8_t>(SPI_CLK_pin->get_pin()),
+                    static_cast<int8_t>(SPI_MOSI_pin->get_pin())
 
-            /**
-             * Sets the driver which will be used before display instantiation.
-             *
-             * @param driver Driver enum
-             */
-            void set_driver(HUB75_I2S_CFG::shift_driver driver)
-            {
-                this->mxconfig_.driver = driver;
-            };
+                };
+            }
 
             /**
              * Sets the clock speed
              *
              * @param speed i2s clock speed
              */
-            void set_i2sspeed(HUB75_I2S_CFG::clk_speed speed)
+            void set_spispeed(FPGA_SPI_CFG::clk_speed speed)
             {
-                this->mxconfig_.i2sspeed = speed;
+                this->mxconfig_.spispeed = speed;
             };
-
-            /**
-             * Sets for how many cycles OE is blanked before and after LAT changes.
-             *
-             * @param latch_blanking cycle count
-             */
-            void set_latch_blanking(int latch_blanking)
-            {
-                this->mxconfig_.latch_blanking = latch_blanking;
-            };
-
-            /**
-             * Sets the user defined clock phase and flag.
-             *
-             * @param clock_phase clock phase value
-             */
-            void set_clock_phase(bool clock_phase)
-            {
-                this->mxconfig_.clkphase = clock_phase;
-            }
 
             display::DisplayType get_display_type() override
             {
@@ -223,10 +188,10 @@ namespace esphome
 
         protected:
             /// @brief Wrapped matrix display
-            MatrixPanel_I2S_DMA *dma_display_ = nullptr;
+            MatrixPanel_FPGA_SPI *dma_display_ = nullptr;
 
             /// @brief Matrix configuration
-            HUB75_I2S_CFG mxconfig_;
+            FPGA_SPI_CFG mxconfig_;
 
             /// @brief initial brightness of the display
             int initial_brightness_ = 128;
