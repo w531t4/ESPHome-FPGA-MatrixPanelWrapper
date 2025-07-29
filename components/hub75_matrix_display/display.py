@@ -16,27 +16,30 @@ MATRIX_ID = "matrix_id"
 CHAIN_LENGTH = "chain_length"
 BRIGHTNESS = "brightness"
 
-R1_PIN = "R1_pin"
-G1_PIN = "G1_pin"
-B1_PIN = "B1_pin"
-R2_PIN = "R2_pin"
-G2_PIN = "G2_pin"
-B2_PIN = "B2_pin"
+SPI_CLK_PIN = "SPI_CLK_pin"
+SPI_MOSI_PIN = "SPI_MOSI_pin"
+SPI_CE_PIN =  "SPI_CE_pin"
+# R1_PIN = "R1_pin"
+# G1_PIN = "G1_pin"
+# B1_PIN = "B1_pin"
+# R2_PIN = "R2_pin"
+# G2_PIN = "G2_pin"
+# B2_PIN = "B2_pin"
 
-A_PIN = "A_pin"
-B_PIN = "B_pin"
-C_PIN = "C_pin"
-D_PIN = "D_pin"
-E_PIN = "E_pin"
+# A_PIN = "A_pin"
+# B_PIN = "B_pin"
+# C_PIN = "C_pin"
+# D_PIN = "D_pin"
+# E_PIN = "E_pin"
 
-LAT_PIN = "LAT_pin"
-OE_PIN = "OE_pin"
-CLK_PIN = "CLK_pin"
+# LAT_PIN = "LAT_pin"
+# OE_PIN = "OE_pin"
+# CLK_PIN = "CLK_pin"
 
-DRIVER = "driver"
-I2SSPEED = "i2sspeed"
-LATCH_BLANKING = "latch_blanking"
-CLOCK_PHASE = "clock_phase"
+# DRIVER = "driver"
+SPISPEED = "spispeed"
+# LATCH_BLANKING = "latch_blanking"
+# CLOCK_PHASE = "clock_phase"
 
 USE_CUSTOM_LIBRARY = "use_custom_library"
 
@@ -45,18 +48,18 @@ MatrixDisplay = matrix_display_ns.class_(
     "MatrixDisplay", cg.PollingComponent, display.DisplayBuffer
 )
 
-shift_driver = cg.global_ns.namespace("HUB75_I2S_CFG").enum("shift_driver")
-DRIVERS = {
-    "SHIFTREG": shift_driver.SHIFTREG,
-    "FM6124": shift_driver.FM6124,
-    "FM6126A": shift_driver.FM6126A,
-    "ICN2038S": shift_driver.ICN2038S,
-    "MBI5124": shift_driver.MBI5124,
-    "SM5266": shift_driver.SM5266P,
-    "DP3246_SM5368": shift_driver.DP3246_SM5368,
-}
+# shift_driver = cg.global_ns.namespace("HUB75_I2S_CFG").enum("shift_driver")
+# DRIVERS = {
+#     "SHIFTREG": shift_driver.SHIFTREG,
+#     "FM6124": shift_driver.FM6124,
+#     "FM6126A": shift_driver.FM6126A,
+#     "ICN2038S": shift_driver.ICN2038S,
+#     "MBI5124": shift_driver.MBI5124,
+#     "SM5266": shift_driver.SM5266P,
+#     "DP3246_SM5368": shift_driver.DP3246_SM5368,
+# }
 
-clk_speed = cg.global_ns.namespace("HUB75_I2S_CFG").enum("clk_speed")
+clk_speed = cg.global_ns.namespace("FPGA_SPI_CFG").enum("clk_speed")
 CLOCK_SPEEDS = {
     "HZ_8M": clk_speed.HZ_8M,
     "HZ_10M": clk_speed.HZ_10M,
@@ -76,24 +79,27 @@ CONFIG_SCHEMA = display.FULL_DISPLAY_SCHEMA.extend(
         cv.Optional(
             CONF_UPDATE_INTERVAL, default="16ms"
         ): cv.positive_time_period_milliseconds,
-        cv.Optional(R1_PIN, default=25): pins.gpio_output_pin_schema,
-        cv.Optional(G1_PIN, default=26): pins.gpio_output_pin_schema,
-        cv.Optional(B1_PIN, default=27): pins.gpio_output_pin_schema,
-        cv.Optional(R2_PIN, default=14): pins.gpio_output_pin_schema,
-        cv.Optional(G2_PIN, default=12): pins.gpio_output_pin_schema,
-        cv.Optional(B2_PIN, default=13): pins.gpio_output_pin_schema,
-        cv.Optional(A_PIN, default=23): pins.gpio_output_pin_schema,
-        cv.Optional(B_PIN, default=19): pins.gpio_output_pin_schema,
-        cv.Optional(C_PIN, default=5): pins.gpio_output_pin_schema,
-        cv.Optional(D_PIN, default=17): pins.gpio_output_pin_schema,
-        cv.Optional(E_PIN): pins.gpio_output_pin_schema,
-        cv.Optional(LAT_PIN, default=4): pins.gpio_output_pin_schema,
-        cv.Optional(OE_PIN, default=15): pins.gpio_output_pin_schema,
-        cv.Optional(CLK_PIN, default=16): pins.gpio_output_pin_schema,
-        cv.Optional(DRIVER): cv.enum(DRIVERS, upper=True, space="_"),
-        cv.Optional(I2SSPEED): cv.enum(CLOCK_SPEEDS, upper=True, space="_"),
-        cv.Optional(LATCH_BLANKING): cv.positive_int,
-        cv.Optional(CLOCK_PHASE): cv.boolean,
+        cv.Optional(SPI_CLK_PIN, default=14): pins.gpio_output_pin_schema,
+        cv.Optional(SPI_MOSI_PIN, default=2): pins.gpio_output_pin_schema,
+        cv.Optional(SPI_CE_PIN, default=15): pins.gpio_output_pin_schema,
+        # cv.Optional(R1_PIN, default=25): pins.gpio_output_pin_schema,
+        # cv.Optional(G1_PIN, default=26): pins.gpio_output_pin_schema,
+        # cv.Optional(B1_PIN, default=27): pins.gpio_output_pin_schema,
+        # cv.Optional(R2_PIN, default=14): pins.gpio_output_pin_schema,
+        # cv.Optional(G2_PIN, default=12): pins.gpio_output_pin_schema,
+        # cv.Optional(B2_PIN, default=13): pins.gpio_output_pin_schema,
+        # cv.Optional(A_PIN, default=23): pins.gpio_output_pin_schema,
+        # cv.Optional(B_PIN, default=19): pins.gpio_output_pin_schema,
+        # cv.Optional(C_PIN, default=5): pins.gpio_output_pin_schema,
+        # cv.Optional(D_PIN, default=17): pins.gpio_output_pin_schema,
+        # cv.Optional(E_PIN): pins.gpio_output_pin_schema,
+        # cv.Optional(LAT_PIN, default=4): pins.gpio_output_pin_schema,
+        # cv.Optional(OE_PIN, default=15): pins.gpio_output_pin_schema,
+        # cv.Optional(CLK_PIN, default=16): pins.gpio_output_pin_schema,
+        # cv.Optional(DRIVER): cv.enum(DRIVERS, upper=True, space="_"),
+        cv.Optional(SPISPEED): cv.enum(CLOCK_SPEEDS, upper=True, space="_"),
+        # cv.Optional(LATCH_BLANKING): cv.positive_int,
+        # cv.Optional(CLOCK_PHASE): cv.boolean,
     }
 )
 
@@ -105,7 +111,7 @@ async def to_code(config):
         cg.add_library("Adafruit BusIO", None)
         cg.add_library("adafruit/Adafruit GFX Library", None)
         cg.add_library(
-            "https://github.com/TillFleisch/ESP32-HUB75-MatrixPanel-DMA#optional_logging",
+            "https://github.com/w531t4/ESP32-FPGA-MatrixPanel#init",
             None,
         )
 
@@ -115,57 +121,63 @@ async def to_code(config):
     cg.add(var.set_chain_length(config[CHAIN_LENGTH]))
     cg.add(var.set_initial_brightness(config[BRIGHTNESS]))
 
-    R1_pin = await cg.gpio_pin_expression(config[R1_PIN])
-    G1_pin = await cg.gpio_pin_expression(config[G1_PIN])
-    B1_pin = await cg.gpio_pin_expression(config[B1_PIN])
-    R2_pin = await cg.gpio_pin_expression(config[R2_PIN])
-    G2_pin = await cg.gpio_pin_expression(config[G2_PIN])
-    B2_pin = await cg.gpio_pin_expression(config[B2_PIN])
+    SPI_CLK_pin  = await cg.gpio_pin_expression(config[SPI_CLK_PIN])
+    SPI_MOSI_pin = await cg.gpio_pin_expression(config[SPI_MOSI_PIN])
+    SPI_CE_pin   = await cg.gpio_pin_expression(config[SPI_CE_PIN])
+    # R1_pin = await cg.gpio_pin_expression(config[R1_PIN])
+    # G1_pin = await cg.gpio_pin_expression(config[G1_PIN])
+    # B1_pin = await cg.gpio_pin_expression(config[B1_PIN])
+    # R2_pin = await cg.gpio_pin_expression(config[R2_PIN])
+    # G2_pin = await cg.gpio_pin_expression(config[G2_PIN])
+    # B2_pin = await cg.gpio_pin_expression(config[B2_PIN])
 
-    A_pin = await cg.gpio_pin_expression(config[A_PIN])
-    B_pin = await cg.gpio_pin_expression(config[B_PIN])
-    C_pin = await cg.gpio_pin_expression(config[C_PIN])
-    D_pin = await cg.gpio_pin_expression(config[D_PIN])
+    # A_pin = await cg.gpio_pin_expression(config[A_PIN])
+    # B_pin = await cg.gpio_pin_expression(config[B_PIN])
+    # C_pin = await cg.gpio_pin_expression(config[C_PIN])
+    # D_pin = await cg.gpio_pin_expression(config[D_PIN])
 
-    LAT_pin = await cg.gpio_pin_expression(config[LAT_PIN])
-    OE_pin = await cg.gpio_pin_expression(config[OE_PIN])
-    CLK_pin = await cg.gpio_pin_expression(config[CLK_PIN])
+    # LAT_pin = await cg.gpio_pin_expression(config[LAT_PIN])
+    # OE_pin = await cg.gpio_pin_expression(config[OE_PIN])
+    # CLK_pin = await cg.gpio_pin_expression(config[CLK_PIN])
 
-    if E_PIN in config:
-        E_pin = await cg.gpio_pin_expression(config[E_PIN])
-    else:
-        E_pin = 0
+    # if E_PIN in config:
+    #     E_pin = await cg.gpio_pin_expression(config[E_PIN])
+    # else:
+    #     E_pin = 0
 
     cg.add(
         var.set_pins(
-            R1_pin,
-            G1_pin,
-            B1_pin,
-            R2_pin,
-            G2_pin,
-            B2_pin,
-            A_pin,
-            B_pin,
-            C_pin,
-            D_pin,
-            E_pin,
-            LAT_pin,
-            OE_pin,
-            CLK_pin,
+            SPI_CLK_pin,
+            SPI_MOSI_pin,
+            SPI_CE_pin,
+            # R1_pin,
+            # G1_pin,
+            # B1_pin,
+            # R2_pin,
+            # G2_pin,
+            # B2_pin,
+            # A_pin,
+            # B_pin,
+            # C_pin,
+            # D_pin,
+            # E_pin,
+            # LAT_pin,
+            # OE_pin,
+            # CLK_pin,
         )
     )
 
-    if DRIVER in config:
-        cg.add(var.set_driver(config[DRIVER]))
+    # if DRIVER in config:
+    #     cg.add(var.set_driver(config[DRIVER]))
 
-    if I2SSPEED in config:
-        cg.add(var.set_i2sspeed(config[I2SSPEED]))
+    if SPISPEED in config:
+        cg.add(var.set_i2sspeed(config[SPISPEED]))
 
-    if LATCH_BLANKING in config:
-        cg.add(var.set_latch_blanking(config[LATCH_BLANKING]))
+    # if LATCH_BLANKING in config:
+    #     cg.add(var.set_latch_blanking(config[LATCH_BLANKING]))
 
-    if CLOCK_PHASE in config:
-        cg.add(var.set_clock_phase(config[CLOCK_PHASE]))
+    # if CLOCK_PHASE in config:
+    #     cg.add(var.set_clock_phase(config[CLOCK_PHASE]))
 
     await display.register_display(var, config)
 
