@@ -1,0 +1,37 @@
+esphome:
+  name: matrix-display
+
+esp32:
+  board: esp32dev
+
+external_components:
+  - source:
+      type: local
+      path: ../components
+
+display:
+  - platform: hub75_matrix_display
+    id: matrix
+    width: 64
+    height: 32
+    R2_pin: 33
+    G2_pin: 32
+    B2_pin: 18
+    driver: FM6124
+    i2sspeed: HZ_20M
+    latch_blanking: 4
+    clock_phase: false
+    update_interval: 8 ms
+
+switch:
+  - platform: hub75_matrix_display
+    matrix_id: matrix
+    name: "Power"
+    id: power
+    restore_mode: RESTORE_DEFAULT_OFF
+
+number:
+  - platform: hub75_matrix_display
+    id: brightness
+    matrix_id: matrix
+    name: "Brightness"
