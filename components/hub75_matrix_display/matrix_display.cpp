@@ -17,7 +17,7 @@ namespace esphome
             // The min refresh rate correlates with the update frequency of the component
             this->mxconfig_.min_refresh_rate = 1000 / update_interval_;
 
-            this->mxconfig_.double_buff = true;
+            // this->mxconfig_.double_buff = true;
 
             // Display Setup
             dma_display_ = new MatrixPanel_FPGA_SPI(this->mxconfig_);
@@ -44,7 +44,7 @@ namespace esphome
                 this->dma_display_->clearScreen();
             }
             // Flip buffer to show changes
-            this->dma_display_->flipDMABuffer();
+            // this->dma_display_->flipDMABuffer();
         }
 
         void MatrixDisplay::dump_config()
