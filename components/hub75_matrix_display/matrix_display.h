@@ -128,7 +128,7 @@ namespace esphome
                 this->mxconfig_.gpio = {
                     static_cast<int8_t>(SPI_CLK_pin->get_pin()),
                     static_cast<int8_t>(SPI_MOSI_pin->get_pin()),
-                    static_cast<int8_t>(SPI_CE_pin->get_pin())}
+                    static_cast<int8_t>(SPI_CE_pin->get_pin())};
                     // static_cast<int8_t>(R1_pin->get_pin()),
                     // static_cast<int8_t>(G1_pin->get_pin()),
                     // static_cast<int8_t>(B1_pin->get_pin()),
