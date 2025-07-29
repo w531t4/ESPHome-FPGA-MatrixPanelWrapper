@@ -16,9 +16,9 @@ MATRIX_ID = "matrix_id"
 CHAIN_LENGTH = "chain_length"
 BRIGHTNESS = "brightness"
 
+SPI_CE_PIN =  "SPI_CE_pin"
 SPI_CLK_PIN = "SPI_CLK_pin"
 SPI_MOSI_PIN = "SPI_MOSI_pin"
-SPI_CE_PIN =  "SPI_CE_pin"
 # R1_PIN = "R1_pin"
 # G1_PIN = "G1_pin"
 # B1_PIN = "B1_pin"
@@ -79,9 +79,9 @@ CONFIG_SCHEMA = display.FULL_DISPLAY_SCHEMA.extend(
         cv.Optional(
             CONF_UPDATE_INTERVAL, default="16ms"
         ): cv.positive_time_period_milliseconds,
+        cv.Optional(SPI_CE_PIN, default=15): pins.gpio_output_pin_schema,
         cv.Optional(SPI_CLK_PIN, default=14): pins.gpio_output_pin_schema,
         cv.Optional(SPI_MOSI_PIN, default=2): pins.gpio_output_pin_schema,
-        cv.Optional(SPI_CE_PIN, default=15): pins.gpio_output_pin_schema,
         # cv.Optional(R1_PIN, default=25): pins.gpio_output_pin_schema,
         # cv.Optional(G1_PIN, default=26): pins.gpio_output_pin_schema,
         # cv.Optional(B1_PIN, default=27): pins.gpio_output_pin_schema,
@@ -121,9 +121,9 @@ async def to_code(config):
     cg.add(var.set_chain_length(config[CHAIN_LENGTH]))
     cg.add(var.set_initial_brightness(config[BRIGHTNESS]))
 
+    SPI_CE_pin   = await cg.gpio_pin_expression(config[SPI_CE_PIN])
     SPI_CLK_pin  = await cg.gpio_pin_expression(config[SPI_CLK_PIN])
     SPI_MOSI_pin = await cg.gpio_pin_expression(config[SPI_MOSI_PIN])
-    SPI_CE_pin   = await cg.gpio_pin_expression(config[SPI_CE_PIN])
     # R1_pin = await cg.gpio_pin_expression(config[R1_PIN])
     # G1_pin = await cg.gpio_pin_expression(config[G1_PIN])
     # B1_pin = await cg.gpio_pin_expression(config[B1_PIN])
@@ -147,9 +147,9 @@ async def to_code(config):
 
     cg.add(
         var.set_pins(
+            SPI_CE_pin,
             SPI_CLK_pin,
             SPI_MOSI_pin,
-            SPI_CE_pin,
             # R1_pin,
             # G1_pin,
             # B1_pin,

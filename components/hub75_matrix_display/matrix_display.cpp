@@ -54,7 +54,7 @@ namespace esphome
             FPGA_SPI_CFG cfg = this->dma_display_->getCfg();
 
             // Log pin settings
-            ESP_LOGCONFIG(TAG, "  Pins: SPI_CLK:%i, SPI_CE:%i, SPI_MOSI:%i", cfg.gpio.clk, cfg.gpio.ce, cfg.gpio.mosi);
+            ESP_LOGCONFIG(TAG, "  Pins: SPI_CE:%i, SPI_CLK:%i, SPI_MOSI:%i", cfg.gpio.ce, cfg.gpio.clk, cfg.gpio.mosi);
             // ESP_LOGCONFIG(TAG, "  Pins: R1:%i, G1:%i, B1:%i, R2:%i, G2:%i, B2:%i", cfg.gpio.r1, cfg.gpio.g1, cfg.gpio.b1, cfg.gpio.r2, cfg.gpio.g2, cfg.gpio.b2);
             // ESP_LOGCONFIG(TAG, "  Pins: A:%i, B:%i, C:%i, D:%i, E:%i", cfg.gpio.a, cfg.gpio.b, cfg.gpio.c, cfg.gpio.d, cfg.gpio.e);
             // ESP_LOGCONFIG(TAG, "  Pins: LAT:%i, OE:%i, CLK:%i", cfg.gpio.lat, cfg.gpio.oe, cfg.gpio.clk);
