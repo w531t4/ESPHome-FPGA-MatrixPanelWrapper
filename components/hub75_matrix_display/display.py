@@ -171,7 +171,7 @@ async def to_code(config):
     #     cg.add(var.set_driver(config[DRIVER]))
 
     if SPISPEED in config:
-        cg.add(var.set_i2sspeed(config[SPISPEED]))
+        cg.add(var.set_spispeed(config[SPISPEED]))
 
     # if LATCH_BLANKING in config:
     #     cg.add(var.set_latch_blanking(config[LATCH_BLANKING]))
