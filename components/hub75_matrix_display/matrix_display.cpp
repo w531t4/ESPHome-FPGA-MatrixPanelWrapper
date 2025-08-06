@@ -107,7 +107,8 @@ namespace esphome
                 return;
 
             // Update pixel value in buffer
-            this->dma_display_->drawPixelRGB888(x, y, color.r, color.g, color.b);
+            int flipped_x = this->get_width_internal() - 1 - x;
+            this->dma_display_->drawPixelRGB888(flipped_x, y, color.r, color.g, color.b);
         }
 
         void MatrixDisplay::fill(Color color)
