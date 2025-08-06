@@ -120,7 +120,7 @@ namespace esphome
         void MatrixDisplay::filled_rectangle(int x1, int y1, int width, int height, Color color)
         {
             // Wrap fill rectangle method
-            this->dma_display_->fillRect(x1, y1, width, width, color.r, color.g, color.b);
+            this->dma_display_->fillRect(x1, y1, width, height, color.r, color.g, color.b);
         }
 
     } // namespace matrix_display
