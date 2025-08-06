@@ -89,6 +89,9 @@ namespace esphome
             // ESP_LOGCONFIG(TAG, "  Latch Blanking: %i", cfg.latch_blanking);
             // ESP_LOGCONFIG(TAG, "  Clock Phase: %s", TRUEFALSE(cfg.clkphase));
             ESP_LOGCONFIG(TAG, "  Min Refresh Rate: %i", cfg.min_refresh_rate);
+            ESP_LOGCONFIG(TAG, "  width: %i", cfg.mx_width);
+            ESP_LOGCONFIG(TAG, "  height: %i", cfg.mx_height);
+            ESP_LOGCONFIG(TAG, "  chain_length: %i", cfg.chain_length);
         }
 
         void MatrixDisplay::set_brightness(int brightness)
