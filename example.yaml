@@ -3,7 +3,7 @@ esphome:
   friendly_name: Matrix Display
 
 external_components:
-  - source: github://w531t4/ESP32-FPGA-MatrixDisplayWrapper@main
+  - source: github://w531t4/ESPHome-FPGA-MatrixDisplayWrapper@main
 
 esp32:
   board: esp32dev

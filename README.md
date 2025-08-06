@@ -2,7 +2,7 @@
 https://github.com/TillFleisch/ESPHome-HUB75-MatrixDisplayWrapper
 ... but for my FPGA project.
 
-# ESP32-FPGA-MatrixPanel ESPHome wrapper [![CI](https://github.com/w531t4/ESP32-FPGA-MatrixDisplayWrapper/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/w531t4/ESP32-FPGA-MatrixDisplayWrapper/actions/workflows/ci.yaml)
+# ESP32-FPGA-MatrixPanel ESPHome wrapper [![CI](https://github.com/w531t4/ESPHome-FPGA-MatrixDisplayWrapper/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/w531t4/ESPHome-FPGA-MatrixDisplayWrapper/actions/workflows/ci.yaml)
 
 This custom component is a [ESPHome](https://esphome.io/) wrapper for the [ESP32-FPGA-MatrixPanel](https://github.com/w531t4/ESP32-FPGA-MatrixPanel#main) library. For more details regarding wiring, choosing the correct parameters and more complex configurations please refer to the above linked documentation.
 This ESPHome component wraps the library into an ESPHome [display component](https://esphome.io/components/display/index.html) which can be used to show text, sensor values and images.
@@ -19,7 +19,7 @@ esphome:
   friendly_name: Matrix Display
 
 external_components:
-  - source: github://w531t4/ESP32-FPGA-MatrixDisplayWrapper@main
+  - source: github://w531t4/ESPHome-FPGA-MatrixDisplayWrapper@main
 
 esp32:
   board: esp32dev
