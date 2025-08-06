@@ -63,7 +63,7 @@ async def to_code(config):
         cg.add_library("Adafruit BusIO", None)
         cg.add_library("adafruit/Adafruit GFX Library", None)
         cg.add_library(
-            "https://github.com/w531t4/ESP32-FPGA-MatrixPanel#init",
+            "https://github.com/w531t4/ESP32-FPGA-MatrixPanel#main",
             None,
         )
 
