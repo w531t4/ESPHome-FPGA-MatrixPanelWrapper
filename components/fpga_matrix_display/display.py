@@ -19,6 +19,9 @@ BRIGHTNESS = "brightness"
 SPI_CE_PIN =  "SPI_CE_pin"
 SPI_CLK_PIN = "SPI_CLK_pin"
 SPI_MOSI_PIN = "SPI_MOSI_pin"
+
+FPGA_RESET_PIN = "FPGA_RESET_pin"
+
 SPISPEED = "spispeed"
 
 USE_CUSTOM_LIBRARY = "use_custom_library"
@@ -35,6 +38,7 @@ CLOCK_SPEEDS = {
     "HZ_15M": clk_speed.HZ_15M,
     "HZ_16M": clk_speed.HZ_16M,
     "HZ_20M": clk_speed.HZ_20M,
+    "HZ_26M": clk_speed.HZ_26M,
 }
 
 CONFIG_SCHEMA = display.FULL_DISPLAY_SCHEMA.extend(
@@ -51,6 +55,7 @@ CONFIG_SCHEMA = display.FULL_DISPLAY_SCHEMA.extend(
         cv.Optional(SPI_CE_PIN, default=15): pins.gpio_output_pin_schema,
         cv.Optional(SPI_CLK_PIN, default=14): pins.gpio_output_pin_schema,
         cv.Optional(SPI_MOSI_PIN, default=2): pins.gpio_output_pin_schema,
+        cv.Optional(FPGA_RESET_PIN, default=4): pins.gpio_output_pin_schema,
         cv.Optional(SPISPEED): cv.enum(CLOCK_SPEEDS, upper=True, space="_"),
     }
 )
@@ -76,12 +81,14 @@ async def to_code(config):
     SPI_CE_pin   = await cg.gpio_pin_expression(config[SPI_CE_PIN])
     SPI_CLK_pin  = await cg.gpio_pin_expression(config[SPI_CLK_PIN])
     SPI_MOSI_pin = await cg.gpio_pin_expression(config[SPI_MOSI_PIN])
+    FPGA_RESET_pin = await cg.gpio_pin_expression(config[FPGA_RESET_PIN])
 
     cg.add(
         var.set_pins(
             SPI_CE_pin,
             SPI_CLK_pin,
             SPI_MOSI_pin,
+            FPGA_RESET_pin,
         )
     )
 

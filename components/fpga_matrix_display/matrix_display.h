@@ -108,13 +108,15 @@ namespace esphome
             void set_pins(
                              InternalGPIOPin *SPI_CE_pin,
                              InternalGPIOPin *SPI_CLK_pin,
-                             InternalGPIOPin *SPI_MOSI_pin
+                             InternalGPIOPin *SPI_MOSI_pin,
+                             InternalGPIOPin *FPGA_RESET_pin
                         )
             {
                 this->mxconfig_.gpio = {
                     static_cast<int8_t>(SPI_CE_pin->get_pin()),
                     static_cast<int8_t>(SPI_CLK_pin->get_pin()),
-                    static_cast<int8_t>(SPI_MOSI_pin->get_pin())
+                    static_cast<int8_t>(SPI_MOSI_pin->get_pin()),
+                    static_cast<int8_t>(FPGA_RESET_pin->get_pin())
 
                 };
             }
@@ -185,7 +187,7 @@ namespace esphome
             {
                 return this->brightness_values_;
             }
-
+            void write_display_data();
         protected:
             /// @brief Wrapped matrix display
             MatrixPanel_FPGA_SPI *dma_display_ = nullptr;
@@ -222,6 +224,8 @@ namespace esphome
              * @param color Color of the pixel
              */
             void draw_absolute_pixel_internal(int x, int y, Color color) override;
+            int cached_width_ = 0;
+            int cached_height_ = 0;
         };
 
     } // namespace matrix_display
