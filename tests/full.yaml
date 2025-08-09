@@ -10,28 +10,26 @@ external_components:
       path: ../components
 
 display:
-  - platform: hub75_matrix_display
+  - platform: fpga_matrix_display
     id: matrix
     width: 64
     height: 32
-    R2_pin: 33
-    G2_pin: 32
-    B2_pin: 18
-    driver: FM6124
-    i2sspeed: HZ_20M
-    latch_blanking: 4
-    clock_phase: false
-    update_interval: 8 ms
+    SPI_CLK_pin: 33
+    SPI_MOSI_pin: 32
+    SPI_CE_pin: 18
+    FPGA_RESET_PIN: 4
+    spispeed: HZ_26M
+    update_interval: 100 ms
 
 switch:
-  - platform: hub75_matrix_display
+  - platform: fpga_matrix_display
     matrix_id: matrix
     name: "Power"
     id: power
     restore_mode: RESTORE_DEFAULT_OFF
 
 number:
-  - platform: hub75_matrix_display
+  - platform: fpga_matrix_display
     id: brightness
     matrix_id: matrix
     name: "Brightness"
