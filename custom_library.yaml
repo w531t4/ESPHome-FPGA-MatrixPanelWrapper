@@ -2,10 +2,6 @@ esphome:
   name: matrix-display
   platformio_options:
     lib_deps:
-      - SPI
-      - Wire
-      - Adafruit BusIO
-      - adafruit/Adafruit GFX Library
       - https://github.com/w531t4/ESP32-FPGA-MatrixPanel#init
 
 display:
