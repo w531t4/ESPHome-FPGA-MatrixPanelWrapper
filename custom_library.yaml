@@ -2,7 +2,7 @@ esphome:
   name: matrix-display
   platformio_options:
     lib_deps:
-      - https://github.com/w531t4/ESP32-FPGA-MatrixPanel#init
+      - https://github.com/w531t4/ESP32-FPGA-MatrixPanel#main
 
 display:
   - platform: fpga_matrix_display
