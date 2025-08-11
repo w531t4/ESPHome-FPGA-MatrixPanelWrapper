@@ -105,6 +105,7 @@ namespace esphome
             for (int y = 0; y < this->cached_height_; y++) {
                 this->dma_display_->drawRowRGB888(static_cast<uint8_t>(y), &this->buffer_[(y*this->cached_width_)*3], this->cached_width_ * 3);
             }
+            this->dma_display_->swapFrame();
         };
 
         void MatrixDisplay::fill(Color color)
