@@ -98,6 +98,16 @@ namespace esphome
             };
 
             /**
+             * Sets the boolean which decides whether watchdog must be fed
+             *
+             * @param use_watchdog
+             */
+            void set_initial_watchdog(bool use_watchdog)
+            {
+                this->use_watchdog = use_watchdog;
+            };
+
+            /**
              * Gets the inital brightness value from this display.
              */
             int get_initial_brightness()
@@ -226,6 +236,8 @@ namespace esphome
             void draw_absolute_pixel_internal(int x, int y, Color color) override;
             int cached_width_ = 0;
             int cached_height_ = 0;
+            bool use_watchdog = false;
+            uint32_t watchdog_last_checkin = 0;
         };
 
     } // namespace matrix_display
