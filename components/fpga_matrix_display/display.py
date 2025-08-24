@@ -25,7 +25,7 @@ FPGA_RESET_PIN = "FPGA_RESET_pin"
 SPISPEED = "spispeed"
 
 USE_CUSTOM_LIBRARY = "use_custom_library"
-USE_WATCHDOG = "true"
+USE_WATCHDOG = "use_watchdog"
 
 matrix_display_ns = cg.esphome_ns.namespace("matrix_display")
 MatrixDisplay = matrix_display_ns.class_(
