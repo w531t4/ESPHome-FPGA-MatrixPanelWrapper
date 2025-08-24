@@ -63,6 +63,12 @@ namespace esphome
             //     ESP_LOGD(TAG, "do_update_() took %u microseconds", elapsed_update_time);
             // }
             // ESP_LOGD(TAG, "update() took %u microseconds", elapsed_time);
+            auto now = micros();
+            if ((now - this->watchdog_last_checkin) > (1 * 1000 * 1000)) {
+                ESP_LOGD(TAG, "feeding watchdog. %u microseconds has elapsed", (now - this->watchdog_last_checkin));
+                this->dma_display_->fulfillWatchdog();
+                this->watchdog_last_checkin = now;
+            }
         }
 
         void MatrixDisplay::dump_config()

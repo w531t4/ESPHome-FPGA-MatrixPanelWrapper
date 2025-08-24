@@ -226,6 +226,7 @@ namespace esphome
             void draw_absolute_pixel_internal(int x, int y, Color color) override;
             int cached_width_ = 0;
             int cached_height_ = 0;
+            uint32_t watchdog_last_checkin = 0;
         };
 
     } // namespace matrix_display
