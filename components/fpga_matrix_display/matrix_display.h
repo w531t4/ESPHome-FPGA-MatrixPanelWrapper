@@ -163,7 +163,7 @@ namespace esphome
              * @param height height of the rectangle
              * @param color Color used for filling the rectangle
              */
-            void filled_rectangle(int x1, int y1, int width, int height, Color color = display::COLOR_ON);
+            // void filled_rectangle(int x1, int y1, int width, int height, Color color = display::COLOR_ON);
 
             /**
              * Sets the on/off state of the matrix display
