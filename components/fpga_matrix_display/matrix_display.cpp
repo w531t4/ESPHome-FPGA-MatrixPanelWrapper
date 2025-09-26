@@ -96,6 +96,7 @@ namespace esphome
         }
 
         void HOT MatrixDisplay::draw_absolute_pixel_internal(int x, int y, Color color) {
+            if (x < 0 || x >= this->cached_width_ || y < 0 || y >= this->cached_height_) return;
             const int i = (y * this->cached_width_ + x) * 3;
             this->buffer_[i + 0] = color.red;
             this->buffer_[i + 1] = color.green;
