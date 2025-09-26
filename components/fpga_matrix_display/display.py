@@ -40,6 +40,8 @@ CLOCK_SPEEDS = {
     "HZ_16M": clk_speed.HZ_16M,
     "HZ_20M": clk_speed.HZ_20M,
     "HZ_26M": clk_speed.HZ_26M,
+    "HZ_40M": clk_speed.HZ_40M,
+    "HZ_80M": clk_speed.HZ_80M,
 }
 
 CONFIG_SCHEMA = display.FULL_DISPLAY_SCHEMA.extend(
