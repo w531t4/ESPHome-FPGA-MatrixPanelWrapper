@@ -103,6 +103,9 @@ namespace esphome
             this->buffer_[i + 2] = color.blue;
         };
 
+        void HOT MatrixDisplay::swap() {
+            this->dma_display_->swapFrame();
+        }
         void MatrixDisplay::write_display_data() {
             if (this->buffer_ == nullptr) {
                 ESP_LOGE("MatrixDisplay:write_display_data", "buffer_ not initialized!");

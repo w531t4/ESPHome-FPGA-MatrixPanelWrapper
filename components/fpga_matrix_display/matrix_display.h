@@ -198,6 +198,7 @@ namespace esphome
                 return this->brightness_values_;
             }
             void write_display_data();
+            void swap();
         protected:
             /// @brief Wrapped matrix display
             MatrixPanel_FPGA_SPI *dma_display_ = nullptr;
