@@ -4,3 +4,7 @@ tests/.gitignore
 /secrets.yaml
 */__pycache__/
 *.pyc
+esphome
+venv
+config/
+components/fpga_matrix_display/matrix_panel_*
