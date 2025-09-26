@@ -40,7 +40,9 @@ namespace esphome
          */
         void MatrixDisplay::update()
         {
-            // uint32_t start_time = micros();
+            uint32_t start_time = micros();
+            static uint32_t time_sum = 0;
+            static uint32_t time_count = 0;
             // uint32_t update_end_time, update_start_time;
             if (this->enabled_)
             {
@@ -56,13 +58,6 @@ namespace esphome
             {
                 this->dma_display_->clearScreen();
             }
-            // uint32_t end_time = micros();
-            // uint32_t elapsed_time = end_time - start_time;
-            // if (this->enabled_) {
-            //     uint32_t elapsed_update_time = update_end_time - update_start_time;
-            //     ESP_LOGD(TAG, "do_update_() took %u microseconds", elapsed_update_time);
-            // }
-            // ESP_LOGD(TAG, "update() took %u microseconds", elapsed_time);
             if (this->use_watchdog) {
                 auto now = micros();
                 if ((now - this->watchdog_last_checkin) > (1 * 1000 * 1000)) {
@@ -70,6 +65,13 @@ namespace esphome
                     this->dma_display_->fulfillWatchdog();
                     this->watchdog_last_checkin = now;
                 }
+            }
+            uint32_t end_time = micros();
+            uint32_t elapsed_time = end_time - start_time;
+            time_sum = time_sum + elapsed_time;
+            time_count++;
+            if (time_count > 2 && (time_count % 10) == 0) {
+                ESP_LOGD(TAG, "update() took %u microseconds. avg=%u", elapsed_time, time_sum / time_count);
             }
         }
 
