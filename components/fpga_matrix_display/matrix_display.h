@@ -198,6 +198,7 @@ namespace esphome
                 return this->brightness_values_;
             }
             void write_display_data();
+            void set_pixel(uint16_t x, uint16_t y, uint8_t red, uint8_t green, uint8_t blue);
             void swap();
         protected:
             /// @brief Wrapped matrix display
