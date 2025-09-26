@@ -51,8 +51,8 @@ namespace esphome
                 this->do_update_();
                 // update_end_time = micros();
                 write_display_data();
-                size_t bufsize = this->cached_width_ * this->cached_height_ * 3;
-                memset(this->buffer_, 0x00, bufsize);
+                // size_t bufsize = this->cached_width_ * this->cached_height_ * 3;
+                // memset(this->buffer_, 0x00, bufsize);
             }
             else
             {
