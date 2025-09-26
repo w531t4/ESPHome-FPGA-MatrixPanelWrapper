@@ -103,6 +103,10 @@ namespace esphome
             this->buffer_[i + 2] = color.blue;
         };
 
+        void HOT MatrixDisplay::set_pixel(uint16_t x, uint16_t y, uint8_t red, uint8_t green, uint8_t blue) {
+            this->dma_display_->drawPixelRGB888(x, y, red, green, blue);
+
+        };
         void HOT MatrixDisplay::swap() {
             this->dma_display_->swapFrame();
         }
