@@ -21,6 +21,8 @@ namespace esphome
 
             // Display Setup
             dma_display_ = new MatrixPanel_FPGA_SPI(this->mxconfig_);
+            dma_display_->set_worker_core(1);
+            dma_display_->enable_worker(true);
             this->dma_display_->begin();
             this->cached_width_ = this->get_width_internal();
             this->cached_height_ = this->get_height_internal();
