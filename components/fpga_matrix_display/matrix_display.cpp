@@ -11,6 +11,11 @@ namespace esphome
         /**
          * Initialize the wrapped matrix display with user parameters
          */
+        void MatrixDisplay::periodic_callback(void* arg) {
+            auto* self = static_cast<MatrixDisplay*>(arg);
+            ESP_LOGD(TAG, "interval_usec=%d has elapsed. feeding watchdog.", self->watchdog_interval_usec);
+            self->dma_display_->fulfillWatchdog();
+        }
         void MatrixDisplay::setup()
         {
             ESP_LOGCONFIG(TAG, "Setting up MatrixDisplay...");
@@ -24,6 +29,17 @@ namespace esphome
             dma_display_->set_worker_core(1);
             dma_display_->enable_worker(true);
             this->dma_display_->begin();
+
+            if (this->use_watchdog) {
+                const esp_timer_create_args_t periodic_timer_args = {
+                    .callback = &MatrixDisplay::periodic_callback,
+                    .arg = this,
+                    .name = "periodic_action_timer"
+                };
+                ESP_ERROR_CHECK(esp_timer_create(&periodic_timer_args, &periodic_timer));
+                // Start the timer to trigger every 1,000,000 microseconds (1 second)
+                ESP_ERROR_CHECK(esp_timer_start_periodic(periodic_timer, this->watchdog_interval_usec));
+            }
             this->cached_width_ = this->get_width_internal();
             this->cached_height_ = this->get_height_internal();
             size_t bufsize = this->cached_width_ * this->cached_height_ * 3;
@@ -59,14 +75,6 @@ namespace esphome
             else
             {
                 this->dma_display_->clearScreen();
-            }
-            if (this->use_watchdog) {
-                auto now = micros();
-                if ((now - this->watchdog_last_checkin) > (1 * 1000 * 1000)) {
-                    ESP_LOGD(TAG, "feeding watchdog. %u microseconds have elapsed", (now - this->watchdog_last_checkin));
-                    this->dma_display_->fulfillWatchdog();
-                    this->watchdog_last_checkin = now;
-                }
             }
             uint32_t end_time = micros();
             uint32_t elapsed_time = end_time - start_time;
