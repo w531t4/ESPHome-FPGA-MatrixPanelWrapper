@@ -26,6 +26,7 @@ SPISPEED = "spispeed"
 
 USE_CUSTOM_LIBRARY = "use_custom_library"
 USE_WATCHDOG = "use_watchdog"
+WATCHDOG_INTERVAL_USEC = "watchdog_interval_usec"
 
 matrix_display_ns = cg.esphome_ns.namespace("matrix_display")
 MatrixDisplay = matrix_display_ns.class_(
@@ -61,6 +62,7 @@ CONFIG_SCHEMA = display.FULL_DISPLAY_SCHEMA.extend(
         cv.Optional(FPGA_RESET_PIN, default=4): pins.gpio_output_pin_schema,
         cv.Optional(SPISPEED): cv.enum(CLOCK_SPEEDS, upper=True, space="_"),
         cv.Optional(USE_WATCHDOG, default=True): cv.boolean,
+        cv.Optional(WATCHDOG_INTERVAL_USEC, default=1000000): cv.positive_int,
     }
 )
 
@@ -92,6 +94,7 @@ async def to_code(config):
         )
     )
     cg.add(var.set_initial_watchdog(config[USE_WATCHDOG]))
+    cg.add(var.set_initial_watchdog_interval_usec(config[WATCHDOG_INTERVAL_USEC]))
 
     if SPISPEED in config:
         cg.add(var.set_spispeed(config[SPISPEED]))

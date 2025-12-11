@@ -6,6 +6,7 @@
 #include "esphome/core/log.h"
 #include "esphome/core/component.h"
 #include "esphome/components/display/display_buffer.h"
+#include <esp_timer.h>
 
 #include "matrix_panel_fpga.hpp"
 
@@ -108,6 +109,14 @@ namespace esphome
             };
 
             /**
+             * Sets the iterval at which watchdog must be fed
+             * @param watchdog_interval_usec
+             */
+            void set_initial_watchdog_interval_usec(int interval) {
+                this->watchdog_interval_usec = interval;
+            };
+
+            /**
              * Gets the inital brightness value from this display.
              */
             int get_initial_brightness()
@@ -200,6 +209,7 @@ namespace esphome
             void write_display_data();
             void set_pixel(uint16_t x, uint16_t y, uint8_t red, uint8_t green, uint8_t blue);
             void swap();
+            static void periodic_callback(void* arg);
         protected:
             /// @brief Wrapped matrix display
             MatrixPanel_FPGA_SPI *dma_display_ = nullptr;
@@ -239,7 +249,9 @@ namespace esphome
             int cached_width_ = 0;
             int cached_height_ = 0;
             bool use_watchdog = false;
+            int watchdog_interval_usec = 1000000;
             uint32_t watchdog_last_checkin = 0;
+            esp_timer_handle_t periodic_timer;
         };
 
     } // namespace matrix_display
