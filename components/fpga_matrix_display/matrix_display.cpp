@@ -77,7 +77,7 @@ void MatrixDisplay::update() {
     uint32_t elapsed_time = end_time - start_time;
     time_sum = time_sum + elapsed_time;
     time_count++;
-    if (time_count > 2 && (time_count % 10) == 0) {
+    if (time_count > 2 && (time_count % 100) == 0) {
         ESP_LOGD(TAG, "update() took %u microseconds. avg=%u", elapsed_time,
                  time_sum / time_count);
     }
