@@ -84,3 +84,30 @@ This number entity can be used to set the display brightness. In combination wit
 
 - Library used in this Project: [ESP32-HUB75-MatrixPanel-DMA](https://github.com/mrcodetastic/ESP32-HUB75-MatrixPanel-DMA) by [@mrcodetastic](https://github.com/mrcodetastic)
 - Library used in this Project: [ESPHome-HUB75-MatrixDisplayWrapper](https://github.com/TillFleisch/ESPHome-HUB75-MatrixDisplayWrapper) by [@TillFleisch](https://github.com/TillFleisch)
+
+# clangd/vscode
+
+## Updating compile steps
+  - `cd .esphome/build/<project>`
+  - `pio run -t compiledb`
+
+## Add to user vscode settings
+  ```
+      "clangd.arguments": [
+          "--compile-commands-dir=${workspaceFolder}/.esphome/build/<project>",
+          "--background-index",
+          "--query-driver=**/xtensa-esp32-elf-g++",
+          "--path-mappings=${FULLPATH}$.esphome/build/<project>/src=${FULLPATH}$/config/include"
+      ],
+  ```
+## Add to ${FULLPATH}/.clangd
+  ```
+  CompileFlags:
+    Remove:
+      - -fno-tree-switch-conversion
+      - -fstrict-volatile-bitfields
+      - -mlongcalls
+    Add:
+      - -Qunused-arguments
+      - -I${FULLPATH}$/config/.esphome/build/<project>/src
+  ```

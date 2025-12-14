@@ -1,0 +1,8 @@
+CompileFlags:
+  Remove:
+    - -fno-tree-switch-conversion
+    - -fstrict-volatile-bitfields
+    - -mlongcalls
+  Add:
+    - -Qunused-arguments
+    - -I/home/awhite/Documents/Projects/ESPHome-FPGA-MatrixPanelWrapper/config/.esphome/build/ulx3s-b0b21c636b54/src
