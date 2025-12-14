@@ -97,7 +97,6 @@ This number entity can be used to set the display brightness. In combination wit
           "--compile-commands-dir=${workspaceFolder}/.esphome/build/<project>",
           "--background-index",
           "--query-driver=**/xtensa-esp32-elf-g++",
-          "--path-mappings=${FULLPATH}$.esphome/build/<project>/src=${FULLPATH}$/config/include"
       ],
   ```
 ## Add to ${FULLPATH}/.clangd
