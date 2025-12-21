@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2019 ESPHome
+SPDX-FileCopyrightText: 2025 Aaron White <w531t4@gmail.com>
+SPDX-License-Identifier: MIT
+-->
 # Modelling this project in the spirit of
 https://github.com/TillFleisch/ESPHome-HUB75-MatrixDisplayWrapper
 ... but for my FPGA project.
