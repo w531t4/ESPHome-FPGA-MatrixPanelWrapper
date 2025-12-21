@@ -1,7 +1,9 @@
 /.esphome/
 tests/.gitignore
 /secrets.yaml
-*/__pycache__/
+**/__pycache__/**
+.pytest_cache/*
+__pycache__
 *.pyc
 esphome
 venv
