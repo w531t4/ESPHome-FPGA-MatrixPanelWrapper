@@ -1,0 +1,21 @@
+version = 1
+
+[[annotations]]
+path = [
+    ".clang-format",
+    ".vscode/settings.json"
+
+
+]
+SPDX-FileCopyrightText = "2025 Aaron White <w531t4@gmail.com>"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = [
+    "images/pixel_matrix_display_back.jpg",
+    "images/pixel_matrix_display_front.gif",
+    "images/pixel_matrix_panel_raw.gif"
+
+]
+SPDX-FileCopyrightText = "2019 ESPHome"
+SPDX-License-Identifier = "MIT"
