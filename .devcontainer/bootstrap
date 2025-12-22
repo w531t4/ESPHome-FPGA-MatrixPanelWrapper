@@ -47,9 +47,6 @@ if [ ! -d ${depends_path}/${name} ]; then
                 --jobs 8 \
                 https://github.com/w531t4/${name} ${depends_path}/${name}
 fi
-# for each in $(ls *.hpp *.cpp | grep -v main.cpp); do
-#         ln -sf ${depends_path}/${name}/src/${each} /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/fpga_matrix_display/${each}
-# done
 
 name="ESPHome-core_load"
 if [ ! -d ${depends_path}/${name} ]; then
