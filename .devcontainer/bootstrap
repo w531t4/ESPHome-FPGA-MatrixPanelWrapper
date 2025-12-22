@@ -21,41 +21,43 @@ echo "Installing development dependencies..."
 # jq -r '.install[].name' plan.json | grep -vi '^esphome$' | xargs uv pip install -config-settings --upgrade editable_mode=compat
 
 mkdir -p /home/vscode/depends
-git clone \
-        --depth 1 \
-        --single-branch \
-        --branch main \
-        --recurse-submodules \
-        --shallow-submodules \
-        --jobs 8 \
-        https://github.com/w531t4/ESP32-FPGA-MatrixPanel /home/vscode/depends/ESP32-FPGA-MatrixPanel
 
+if [ ! -d /home/vscode/depends/ESP32-FPGA-MatrixPanel ]; then
+        git clone \
+                --depth 1 \
+                --single-branch \
+                --branch main \
+                --recurse-submodules \
+                --shallow-submodules \
+                --jobs 8 \
+                https://github.com/w531t4/ESP32-FPGA-MatrixPanel /home/vscode/depends/ESP32-FPGA-MatrixPanel
+fi
 cd /home/vscode/depends/ESP32-FPGA-MatrixPanel/src
 for each in $(ls *.hpp *.cpp | grep -v main.cpp); do
         ln -sf $(pwd)/${each} /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/fpga_matrix_display/${each}
 done
 
-mkdir -p /home/vscode/depends
-git clone \
-        --depth 1 \
-        --single-branch \
-        --branch main \
-        --recurse-submodules \
-        --shallow-submodules \
-        --jobs 8 \
-        https://github.com/w531t4/ESPHome-core_load /home/vscode/depends/ESPHome-core_load
-
+if [ ! -d /home/vscode/depends/ESPHome-core_load ]; then
+        git clone \
+                --depth 1 \
+                --single-branch \
+                --branch main \
+                --recurse-submodules \
+                --shallow-submodules \
+                --jobs 8 \
+                https://github.com/w531t4/ESPHome-core_load /home/vscode/depends/ESPHome-core_load
+fi
 cd /home/vscode/depends/ESPHome-core_load
 ln -sf $(pwd)/components/core_load /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/core_load
 
-mkdir -p /home/vscode/depends
-git clone \
-        --depth 1 \
-        --single-branch \
-        --branch 2025.12.1 \
-        --recurse-submodules \
-        --shallow-submodules \
-        --jobs 8 \
-        https://github.com/esphome/esphome /home/vscode/depends/esphome
-
+if [ ! -d /home/vscode/depends/esphome ]; then
+        git clone \
+                --depth 1 \
+                --single-branch \
+                --branch 2025.12.1 \
+                --recurse-submodules \
+                --shallow-submodules \
+                --jobs 8 \
+                https://github.com/esphome/esphome /home/vscode/depends/esphome
+fi
 ln -sf /home/vscode/depends/esphome/esphome /workspaces/ESPHome-FPGA-MatrixPanelWrapper/esphome
