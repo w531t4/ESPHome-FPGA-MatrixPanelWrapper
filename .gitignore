@@ -8,6 +8,6 @@ tests/.gitignore
 __pycache__
 *.pyc
 esphome
-venv
+.venv
 config/
 components/fpga_matrix_display/matrix_panel_*
