@@ -115,3 +115,17 @@ This number entity can be used to set the display brightness. In combination wit
       - -Qunused-arguments
       - -I${FULLPATH}$/config/.esphome/build/<project>/src
   ```
+
+# Getting Started
+[![Open in Dev Container](https://img.shields.io/badge/Open-Dev%20Container-blue?logo=visualstudiocode)](
+https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/w531t4/ESPHome-FPGA-MatrixPanelWrapper
+)
+
+# Acknowledgements
+
+This project is based on and incorporates code from:
+
+- **ESPHome-HUB75-MatrixDisplayWrapper** by TillFleisch
+  - https://github.com/TillFleisch/ESPHome-HUB75-MatrixDisplayWrapper
+  - License: Portions are GPL-3.0-or-later, Portions are MIT
+
