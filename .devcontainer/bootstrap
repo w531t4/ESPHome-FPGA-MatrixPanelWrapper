@@ -32,7 +32,7 @@ mkdir -p ${depends_path}
 #                 --jobs 8 \
 #                 https://github.com/esphome/${name} ${depends_path}/${name}
 # fi
-# ln -sf ${depends_path}/esphome/${name} /workspaces/ESPHome-FPGA-MatrixPanelWrapper/esphome
+# ln -sfnT ${depends_path}/esphome/${name} /workspaces/ESPHome-FPGA-MatrixPanelWrapper/esphome
 
 name="ESP32-FPGA-MatrixPanel"
 if [ ! -d ${depends_path}/${name} ]; then
@@ -49,6 +49,7 @@ for each in $(ls *.hpp *.cpp | grep -v main.cpp); do
         ln -sf ${depends_path}/${name}/src/${each} /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/fpga_matrix_display/${each}
 done
 
+depends_path="/home/vscode/depends"
 name="ESPHome-core_load"
 if [ ! -d ${depends_path}/${name} ]; then
         git clone \
@@ -60,6 +61,6 @@ if [ ! -d ${depends_path}/${name} ]; then
                 --jobs 8 \
                 https://github.com/w531t4/${name} ${depends_path}/${name}
 fi
-ln -sf ${depends_path}/${name}/components/core_load /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/core_load
+ln -sfnT ${depends_path}/${name}/components/core_load /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/core_load
 
 .devcontainer/bootstrap-private-configs
