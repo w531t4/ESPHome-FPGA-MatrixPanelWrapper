@@ -15,10 +15,14 @@ uv pip install \
   --upgrade \
   --config-settings editable_mode=compat
 
+depends_path="/home/vscode/depends"
+mkdir -p ${depends_path}
+
 # # Use this section if you need to adjust esphome sources when building.
 # # If going this route, ensure you run `uv pip remove esphome`, and then python3 -m esphome (from project
 # # main path
-# if [ ! -d /home/vscode/depends/esphome ]; then
+# name="esphome"
+# if [ ! -d ${depends_path}/${name} ]; then
 #         git clone \
 #                 --depth 1 \
 #                 --single-branch \
@@ -26,13 +30,12 @@ uv pip install \
 #                 --recurse-submodules \
 #                 --shallow-submodules \
 #                 --jobs 8 \
-#                 https://github.com/esphome/esphome /home/vscode/depends/esphome
+#                 https://github.com/esphome/${name} ${depends_path}/${name}
 # fi
-# ln -sf /home/vscode/depends/esphome/esphome /workspaces/ESPHome-FPGA-MatrixPanelWrapper/esphome
+# ln -sf ${depends_path}/esphome/${name} /workspaces/ESPHome-FPGA-MatrixPanelWrapper/esphome
 
-mkdir -p /home/vscode/depends
-
-if [ ! -d /home/vscode/depends/ESP32-FPGA-MatrixPanel ]; then
+name="ESP32-FPGA-MatrixPanel"
+if [ ! -d ${depends_path}/${name} ]; then
         git clone \
                 --depth 1 \
                 --single-branch \
@@ -40,14 +43,14 @@ if [ ! -d /home/vscode/depends/ESP32-FPGA-MatrixPanel ]; then
                 --recurse-submodules \
                 --shallow-submodules \
                 --jobs 8 \
-                https://github.com/w531t4/ESP32-FPGA-MatrixPanel /home/vscode/depends/ESP32-FPGA-MatrixPanel
+                https://github.com/w531t4/${name} ${depends_path}/${name}
 fi
-
 for each in $(ls *.hpp *.cpp | grep -v main.cpp); do
-        ln -sf /home/vscode/depends/ESP32-FPGA-MatrixPanel/src/${each} /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/fpga_matrix_display/${each}
+        ln -sf ${depends_path}/${name}/src/${each} /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/fpga_matrix_display/${each}
 done
 
-if [ ! -d /home/vscode/depends/ESPHome-core_load ]; then
+name="ESPHome-core_load"
+if [ ! -d ${depends_path}/${name} ]; then
         git clone \
                 --depth 1 \
                 --single-branch \
@@ -55,7 +58,7 @@ if [ ! -d /home/vscode/depends/ESPHome-core_load ]; then
                 --recurse-submodules \
                 --shallow-submodules \
                 --jobs 8 \
-                https://github.com/w531t4/ESPHome-core_load /home/vscode/depends/ESPHome-core_load
+                https://github.com/w531t4/${name} ${depends_path}/${name}
 fi
+ln -sf ${depends_path}/${name}/components/core_load /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/core_load
 
-ln -sf /home/vscode/depends/ESPHome-core_load/components/core_load /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/core_load
