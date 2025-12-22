@@ -42,5 +42,9 @@
         "esphome*": true,
     },
     "editor.formatOnSave": true,
-    "files.trimTrailingWhitespace": true
+    "files.trimTrailingWhitespace": true,
+    "files.associations": {
+        "*.yaml": "esphome",
+        "*.yml": "esphome"
+    }
 }
