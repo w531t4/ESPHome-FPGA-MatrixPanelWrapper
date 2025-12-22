@@ -1,7 +1,25 @@
 {
     "files.exclude": {
-        "toolchain/**": true,
-        "*.tar.gz": true,
+        ".esphome**": true,
+        ".pytest_cache**": true,
+        ".venv": true,
+
+        "components/fpga_matrix_display/__pycache__": true,
+        // "components/fpga_matrix_display/switch": true,
+        // "components/fpga_matrix_display/number": true,
+
+        // ** other **
+        // "complex_matrix_config.yaml": true,
+        // "custom_library.yaml": true,
+        // "example.yaml": true,
+
+        // ** related to hack of building things **
+        "config/components": true,
+        "config/.esphome": true,
+        "config/sm*": true,
+        "config/rat*": true,
+        "config/secret*": true,
+        "config/esphome": true,
         "config/custom_*": true,
         "config/.layout*": true,
         "config/fonts*": true,
@@ -11,22 +29,13 @@
         "config/.board*": true,
         "config/.motion*": true,
         "config/.[bdiglsm]*": true,
-        ".esphome**": true,
-        // "complex_matrix_config.yaml": true,
-        // "custom_library.yaml": true,
-        // "example.yaml": true,
-        ".pytest_cache**": true,
+
+        // ** if compiling from source **
         "esphome*": true,
-        ".venv": true,
-        "config/components": true,
-        "config/.esphome": true,
-        "config/sm*": true,
-        "config/rat*": true,
-        "config/secret*": true,
-        "config/esphome": true,
-        "components/fpga_matrix_display/__pycache__": true,
-        // "components/fpga_matrix_display/switch": true,
-        // "components/fpga_matrix_display/number": true,
+
+        // ** no longer necessary **
+        "toolchain/**": true,
+        "*.tar.gz": true,
     },
     "editor.formatOnSave": true
 }
