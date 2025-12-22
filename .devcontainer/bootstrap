@@ -32,7 +32,7 @@ git clone \
 
 cd /home/vscode/depends/ESP32-FPGA-MatrixPanel/src
 for each in $(ls *.hpp *.cpp | grep -v main.cpp); do
-        ln -s $(pwd)/${each} /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/fpga_matrix_display/${each}
+        ln -sf $(pwd)/${each} /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/fpga_matrix_display/${each}
 done
 
 mkdir -p /home/vscode/depends
@@ -46,7 +46,7 @@ git clone \
         https://github.com/w531t4/ESPHome-core_load /home/vscode/depends/ESPHome-core_load
 
 cd /home/vscode/depends/ESPHome-core_load
-ln -s $(pwd)/components/core_load /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/core_load
+ln -sf $(pwd)/components/core_load /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/core_load
 
 mkdir -p /home/vscode/depends
 git clone \
@@ -58,4 +58,4 @@ git clone \
         --jobs 8 \
         https://github.com/esphome/esphome /home/vscode/depends/esphome
 
-ln -s /home/vscode/depends/esphome/esphome /workspaces/ESPHome-FPGA-MatrixPanelWrapper/esphome
+ln -sf /home/vscode/depends/esphome/esphome /workspaces/ESPHome-FPGA-MatrixPanelWrapper/esphome
