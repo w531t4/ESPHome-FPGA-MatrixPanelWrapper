@@ -49,7 +49,6 @@ for each in $(ls *.hpp *.cpp | grep -v main.cpp); do
         ln -sf ${depends_path}/${name}/src/${each} /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/fpga_matrix_display/${each}
 done
 
-depends_path="/home/vscode/depends"
 name="ESPHome-core_load"
 if [ ! -d ${depends_path}/${name} ]; then
         git clone \
