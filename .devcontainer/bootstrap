@@ -17,7 +17,7 @@ echo "Installing development dependencies..."
 #   && jq -r '.install[].metadata.name' r.json | grep -vi '^pkgx$' | xargs uv pip install
 
 
-uv pip install esphome colorlog --dry-run -upgrade --config-settings editable_mode=compat --report r.json
+uv pip install esphome colorlog --dry-run --upgrade --config-settings editable_mode=compat --report r.json
 jq -r '.install[].metadata.name' r.json | grep -vi '^esphome$' | xargs uv pip install -config-settings --upgrade editable_mode=compat
 
 pushd .
