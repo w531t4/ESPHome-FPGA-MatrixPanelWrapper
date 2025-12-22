@@ -62,3 +62,4 @@ if [ ! -d ${depends_path}/${name} ]; then
 fi
 ln -sf ${depends_path}/${name}/components/core_load /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/core_load
 
+.devcontainer/bootstrap-private-configs

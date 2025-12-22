@@ -9,7 +9,8 @@
   "postCreateCommand": "git config --global --add safe.directory ${containerWorkspaceFolder} && .devcontainer/setup",
   "postStartCommand": ".devcontainer/bootstrap",
   "containerEnv": {
-    "PYTHONASYNCIODEBUG": "1"
+    "PYTHONASYNCIODEBUG": "1",
+    "ESPHOME_HOME_GIT_URL": "${localEnv:ESPHOME_HOME_GIT_URL}"
   },
   "initializeCommand": "",
   "mounts": [],

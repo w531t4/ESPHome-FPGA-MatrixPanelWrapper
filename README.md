@@ -123,6 +123,13 @@ https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/clon
 [![Open in Dev Container (SSH)](https://img.shields.io/badge/Open-Dev%20Container%20SSH-blue?logo=visualstudiocode)](
 https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=ssh%3A%2F%2Fgit%40github.com%2Fw531t4%2FESPHome-FPGA-MatrixPanelWrapper.git
 )
+
+# Leveraging a private ESPHome yaml library
+1. mkdir -p ~/.config/environment.d
+1. edit ~/.config/environment.d/esphome.conf
+  - add `ESPHOME_HOME_GIT_URL=ssh://git@github.com/YourOrg/YourPrivateRepo.git`
+1. reboot/login-out
+1. click link from above section to launch vscode container
 # Acknowledgements
 
 This project is based on and incorporates code from:

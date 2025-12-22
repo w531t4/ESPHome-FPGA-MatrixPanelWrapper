@@ -5,13 +5,13 @@
 __pycache__
 *.pyc
 /.esphome/
-tests/.gitignore
+/tests/.gitignore
 /secrets.yaml
-.venv
-components/fpga_matrix_display/matrix_panel_*
-components/core_load
+/.venv
+/components/fpga_matrix_display/matrix_panel_*
+/components/core_load
 # ** if compiling from source **
-esphome
+/esphome
 
 # ** related to hack of building things **
-config/
+/config
