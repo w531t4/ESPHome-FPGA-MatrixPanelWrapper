@@ -21,6 +21,7 @@
     "GIT_EDITOR=code --wait",
     "--security-opt",
     "label=disable",
+    "--network=host"
   ],
   "customizations": {
     "vscode": {
