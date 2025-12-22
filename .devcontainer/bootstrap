@@ -42,9 +42,9 @@ if [ ! -d /home/vscode/depends/ESP32-FPGA-MatrixPanel ]; then
                 --jobs 8 \
                 https://github.com/w531t4/ESP32-FPGA-MatrixPanel /home/vscode/depends/ESP32-FPGA-MatrixPanel
 fi
-cd /home/vscode/depends/ESP32-FPGA-MatrixPanel/src
+
 for each in $(ls *.hpp *.cpp | grep -v main.cpp); do
-        ln -sf $(pwd)/${each} /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/fpga_matrix_display/${each}
+        ln -sf /home/vscode/depends/ESP32-FPGA-MatrixPanel/src/${each} /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/fpga_matrix_display/${each}
 done
 
 if [ ! -d /home/vscode/depends/ESPHome-core_load ]; then
@@ -57,5 +57,5 @@ if [ ! -d /home/vscode/depends/ESPHome-core_load ]; then
                 --jobs 8 \
                 https://github.com/w531t4/ESPHome-core_load /home/vscode/depends/ESPHome-core_load
 fi
-cd /home/vscode/depends/ESPHome-core_load
-ln -sf $(pwd)/components/core_load /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/core_load
+
+ln -sf /home/vscode/depends/ESPHome-core_load/components/core_load /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/core_load
