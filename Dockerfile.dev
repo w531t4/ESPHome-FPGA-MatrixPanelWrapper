@@ -14,6 +14,7 @@ RUN \
         git \
         cmake \
         autoconf \
+        jq \
         libreadline-dev \
         libffi-dev \
         pre-commit \
