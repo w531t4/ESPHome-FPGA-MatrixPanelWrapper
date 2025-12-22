@@ -8,6 +8,28 @@ cd "$(realpath "$(dirname "$0")/..")"
 
 echo "Installing development dependencies..."
 
+# Install esphome
+uv pip install \
+  -r requirements.txt \
+  colorlog \
+  --upgrade \
+  --config-settings editable_mode=compat
+
+# # Use this section if you need to adjust esphome sources when building.
+# # If going this route, ensure you run `uv pip remove esphome`, and then python3 -m esphome (from project
+# # main path
+# if [ ! -d /home/vscode/depends/esphome ]; then
+#         git clone \
+#                 --depth 1 \
+#                 --single-branch \
+#                 --branch 2025.12.1 \
+#                 --recurse-submodules \
+#                 --shallow-submodules \
+#                 --jobs 8 \
+#                 https://github.com/esphome/esphome /home/vscode/depends/esphome
+# fi
+# ln -sf /home/vscode/depends/esphome/esphome /workspaces/ESPHome-FPGA-MatrixPanelWrapper/esphome
+
 mkdir -p /home/vscode/depends
 
 if [ ! -d /home/vscode/depends/ESP32-FPGA-MatrixPanel ]; then
@@ -37,26 +59,3 @@ if [ ! -d /home/vscode/depends/ESPHome-core_load ]; then
 fi
 cd /home/vscode/depends/ESPHome-core_load
 ln -sf $(pwd)/components/core_load /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/core_load
-
-
-# Install esphome
-uv pip install \
-  -r requirements.txt \
-  colorlog \
-  --upgrade \
-  --config-settings editable_mode=compat
-
-# # Use this section if you need to adjust esphome sources when building.
-# # If going this route, ensure you run `uv pip remove esphome`, and then python3 -m esphome (from project
-# # main path
-# if [ ! -d /home/vscode/depends/esphome ]; then
-#         git clone \
-#                 --depth 1 \
-#                 --single-branch \
-#                 --branch 2025.12.1 \
-#                 --recurse-submodules \
-#                 --shallow-submodules \
-#                 --jobs 8 \
-#                 https://github.com/esphome/esphome /home/vscode/depends/esphome
-# fi
-# ln -sf /home/vscode/depends/esphome/esphome /workspaces/ESPHome-FPGA-MatrixPanelWrapper/esphome
