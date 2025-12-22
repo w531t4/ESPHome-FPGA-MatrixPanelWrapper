@@ -120,7 +120,9 @@ This number entity can be used to set the display brightness. In combination wit
 [![Open in Dev Container](https://img.shields.io/badge/Open-Dev%20Container-blue?logo=visualstudiocode)](
 https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/w531t4/ESPHome-FPGA-MatrixPanelWrapper
 )
-
+[![Open in Dev Container (SSH)](https://img.shields.io/badge/Open-Dev%20Container%20SSH-blue?logo=visualstudiocode)](
+https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=ssh%3A%2F%2Fgit%40github.com%2Fw531t4%2FESPHome-FPGA-MatrixPanelWrapper.git
+)
 # Acknowledgements
 
 This project is based on and incorporates code from:
