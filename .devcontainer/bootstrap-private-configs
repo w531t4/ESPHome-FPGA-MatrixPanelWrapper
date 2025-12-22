@@ -21,3 +21,4 @@ else
 fi
 
 ln -snf ${dest} ./config
+ln -sfnT /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components ${dest}/components
