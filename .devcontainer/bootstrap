@@ -8,3 +8,60 @@ cd "$(realpath "$(dirname "$0")/..")"
 
 echo "Installing development dependencies..."
 
+# uv pip install \
+#   -r requirements.txt \
+#   colorlog \
+#   --upgrade \
+#   --config-settings editable_mode=compat
+# uv pip install pkgx --dry-run --report r.json \
+#   && jq -r '.install[].metadata.name' r.json | grep -vi '^pkgx$' | xargs uv pip install
+
+
+uv pip install esphome colorlog --dry-run -upgrade --config-settings editable_mode=compat --report r.json
+jq -r '.install[].metadata.name' r.json | grep -vi '^esphome$' | xargs uv pip install -config-settings --upgrade editable_mode=compat
+
+pushd .
+mkdir -p /home/vscode/depends
+git clone \
+        --depth 1 \
+        --single-branch \
+        --branch main \
+        --recurse-submodules \
+        --shallow-submodules \
+        --jobs 8 \
+        https://github.com/w531t4/ESP32-FPGA-MatrixPanel /home/vscode/depends/ESP32-FPGA-MatrixPanel
+
+cd /home/vscode/depends/ESP32-FPGA-MatrixPanel/src
+for each in $(ls *.hpp *.cpp | grep -v main.cpp); do
+        ln -s $(pwd)/${each} /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/fpga_matrix_display/${each}
+done
+popd
+
+pushd .
+mkdir -p /home/vscode/depends
+git clone \
+        --depth 1 \
+        --single-branch \
+        --branch main \
+        --recurse-submodules \
+        --shallow-submodules \
+        --jobs 8 \
+        https://github.com/w531t4/ESPHome-core_load /home/vscode/depends/ESPHome-core_load
+
+cd /home/vscode/depends/ESPHome-core_load
+ln -s $(pwd)/components/core_load /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/core_load
+popd
+
+pushd .
+mkdir -p /home/vscode/depends
+git clone \
+        --depth 1 \
+        --single-branch \
+        --branch 2025.12.1 \
+        --recurse-submodules \
+        --shallow-submodules \
+        --jobs 8 \
+        https://github.com/esphome/esphome /home/vscode/depends/esphome
+
+ln -s /home/vscode/depends/esphome/esphome /workspaces/ESPHome-FPGA-MatrixPanelWrapper/esphome
+popd
