@@ -4,7 +4,7 @@
 set -euo pipefail
 
 : "${ESPHOME_HOME_GIT_URL:=}"
-dest="/home/vscode/private_config"
+dest="/workspaces/ESPHome-FPGA-MatrixPanelWrapper/config"
 
 if [[ -z "${ESPHOME_HOME_GIT_URL}" ]]; then
     echo "No private repo configured (ESPHOME_HOME_GIT_URL not set). Skipping."
@@ -16,9 +16,9 @@ if [[ -d "${dest}/.git" ]]; then
     git -C "${dest}" fetch --all --prune
     git -C "${dest}" pull --ff-only
 else
+    rm -f ${dest}
     echo "Cloning private repo into ${dest}..."
     git clone --depth=1 "${ESPHOME_HOME_GIT_URL}" "${dest}"
 fi
 
-ln -snf ${dest} ./config
 ln -sfnT /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components ${dest}/components
