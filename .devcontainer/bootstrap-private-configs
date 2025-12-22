@@ -22,4 +22,4 @@ else
 fi
 
 ln -sfnT /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components ${dest}/components
-ln -sf /workspaces/ESPHome-FPGA-MatrixPanelWrapper/secrets.yaml ${dest}/secrets.yaml 
+ln -sf /workspaces/ESPHome-FPGA-MatrixPanelWrapper/secrets.yaml ${dest}/secrets.yaml
