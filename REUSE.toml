@@ -3,7 +3,8 @@ version = 1
 [[annotations]]
 path = [
     ".clang-format",
-    ".vscode/settings.json"
+    ".vscode/settings.json",
+    ".devcontainer/devcontainer.json"
 
 
 ]
