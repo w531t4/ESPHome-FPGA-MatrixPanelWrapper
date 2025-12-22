@@ -9,6 +9,7 @@ tests/.gitignore
 /secrets.yaml
 .venv
 components/fpga_matrix_display/matrix_panel_*
+components/core_load
 # ** if compiling from source **
 esphome
 
