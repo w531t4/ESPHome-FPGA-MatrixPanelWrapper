@@ -3,8 +3,8 @@
         ".esphome**": true,
         ".pytest_cache**": true,
         ".venv": true,
+        "**/__pycache__/**": true,
 
-        "components/fpga_matrix_display/__pycache__": true,
         // "components/fpga_matrix_display/switch": true,
         // "components/fpga_matrix_display/number": true,
 
@@ -30,12 +30,16 @@
         "config/.motion*": true,
         "config/.[bdiglsm]*": true,
 
+        // depends
+        "depends/ESP32-FPGA-MatrixPanel/[.0-9A-Za-rt-z]*": true,
+        "depends/ESP32-FPGA-MatrixPanel/src/[a-ln-zA-Z0-9]*": true,
+        "depends/ESP32-FPGA-MatrixPanel/src/main.cpp": true,
+        "depends/ESP32-FPGA-MatrixPanel/sdkconfig": true,
+        "depends/ESP32-FPGA-MatrixPanel/setup_env.sh": true,
+        "depends/ESPHome-core_load/[.0-9abd-zA-Z]*": true,
+
         // ** if compiling from source **
         "esphome*": true,
-
-        // ** no longer necessary **
-        "toolchain/**": true,
-        "*.tar.gz": true,
     },
     "editor.formatOnSave": true,
     "files.trimTrailingWhitespace": true
