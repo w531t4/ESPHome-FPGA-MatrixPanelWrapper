@@ -4,6 +4,7 @@ version = 1
 path = [
     ".clang-format",
     ".vscode/settings.json",
+    ".python-version",
     ".devcontainer/devcontainer.json"
 
 

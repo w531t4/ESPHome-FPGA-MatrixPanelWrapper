@@ -17,7 +17,7 @@
         // "example.yaml": true,
         ".pytest_cache**": true,
         "esphome*": true,
-        "venv": true,
+        ".venv": true,
         "config/components": true,
         "config/.esphome": true,
         "config/sm*": true,

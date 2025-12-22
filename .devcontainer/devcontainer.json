@@ -24,6 +24,9 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "ms-python.pylint",
+        "ms-python.vscode-pylance",
+        "redhat.vscode-yaml",
         "esbenp.prettier-vscode",
         "GitHub.vscode-pull-request-github"
       ],
@@ -33,12 +36,12 @@
         "python.experiments.optOutFrom": [
           "pythonTestAdapter"
         ],
-        // "python.defaultInterpreterPath": "/home/vscode/.local/venv/bin/python",
-        // "python.pythonPath": "/home/vscode/.local/venv/bin/python",
-        // "python.terminal.activateEnvInCurrentTerminal": true,
-        // "python.testing.pytestArgs": ["--no-cov"],
-        // "pylint.importStrategy": "fromEnvironment",
-        // "python.analysis.typeCheckingMode": "basic",
+        "python.defaultInterpreterPath": "/home/vscode/.local/venv/bin/python",
+        "python.pythonPath": "/home/vscode/.local/venv/bin/python",
+        "python.terminal.activateEnvInCurrentTerminal": true,
+        "python.testing.pytestArgs": ["--no-cov"],
+        "pylint.importStrategy": "fromEnvironment",
+        "python.analysis.typeCheckingMode": "basic",
         "editor.formatOnPaste": false,
         "editor.formatOnSave": true,
         "editor.formatOnType": true,
