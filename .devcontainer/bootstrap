@@ -15,7 +15,9 @@ uv pip install \
   --upgrade \
   --config-settings editable_mode=compat
 
-depends_path="/home/vscode/depends"
+.devcontainer/bootstrap-private-configs
+
+depends_path="/workspaces/ESPHome-FPGA-MatrixPanelWrapper/depends"
 mkdir -p ${depends_path}
 
 # # Use this section if you need to adjust esphome sources when building.
@@ -45,9 +47,9 @@ if [ ! -d ${depends_path}/${name} ]; then
                 --jobs 8 \
                 https://github.com/w531t4/${name} ${depends_path}/${name}
 fi
-for each in $(ls *.hpp *.cpp | grep -v main.cpp); do
-        ln -sf ${depends_path}/${name}/src/${each} /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/fpga_matrix_display/${each}
-done
+# for each in $(ls *.hpp *.cpp | grep -v main.cpp); do
+#         ln -sf ${depends_path}/${name}/src/${each} /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/fpga_matrix_display/${each}
+# done
 
 name="ESPHome-core_load"
 if [ ! -d ${depends_path}/${name} ]; then
@@ -60,6 +62,5 @@ if [ ! -d ${depends_path}/${name} ]; then
                 --jobs 8 \
                 https://github.com/w531t4/${name} ${depends_path}/${name}
 fi
-ln -sfnT ${depends_path}/${name}/components/core_load /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/core_load
-
-.devcontainer/bootstrap-private-configs
+mkdir -p /workspaces/ESPHome-FPGA-MatrixPanelWrapper/config/custom_components
+ln -sfnT ${depends_path}/${name}/components/core_load /workspaces/ESPHome-FPGA-MatrixPanelWrapper/config/custom_components/core_load
