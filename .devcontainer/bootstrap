@@ -18,7 +18,7 @@ echo "Installing development dependencies..."
 
 
 uv pip install esphome colorlog --dry-run --upgrade --config-settings editable_mode=compat --json > plan.json
-jq -r '.install[].metadata.name' plan.json | grep -vi '^esphome$' | xargs uv pip install -config-settings --upgrade editable_mode=compat
+jq -r '.install[].name' plan.json | grep -vi '^esphome$' | xargs uv pip install -config-settings --upgrade editable_mode=compat
 
 pushd .
 mkdir -p /home/vscode/depends
