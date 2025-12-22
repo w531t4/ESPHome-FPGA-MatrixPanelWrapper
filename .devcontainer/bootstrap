@@ -20,7 +20,6 @@ echo "Installing development dependencies..."
 # uv pip install esphome colorlog --dry-run --upgrade --config-settings editable_mode=compat --json > plan.json
 # jq -r '.install[].name' plan.json | grep -vi '^esphome$' | xargs uv pip install -config-settings --upgrade editable_mode=compat
 
-pushd .
 mkdir -p /home/vscode/depends
 git clone \
         --depth 1 \
@@ -35,9 +34,7 @@ cd /home/vscode/depends/ESP32-FPGA-MatrixPanel/src
 for each in $(ls *.hpp *.cpp | grep -v main.cpp); do
         ln -s $(pwd)/${each} /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/fpga_matrix_display/${each}
 done
-popd
 
-pushd .
 mkdir -p /home/vscode/depends
 git clone \
         --depth 1 \
@@ -50,9 +47,7 @@ git clone \
 
 cd /home/vscode/depends/ESPHome-core_load
 ln -s $(pwd)/components/core_load /workspaces/ESPHome-FPGA-MatrixPanelWrapper/components/core_load
-popd
 
-pushd .
 mkdir -p /home/vscode/depends
 git clone \
         --depth 1 \
@@ -64,4 +59,3 @@ git clone \
         https://github.com/esphome/esphome /home/vscode/depends/esphome
 
 ln -s /home/vscode/depends/esphome/esphome /workspaces/ESPHome-FPGA-MatrixPanelWrapper/esphome
-popd
