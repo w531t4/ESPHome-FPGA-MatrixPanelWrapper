@@ -13,9 +13,7 @@
   },
   "initializeCommand": "",
   "mounts": [],
-  "features": {
-    "ghcr.io/devcontainers-community/features/llvm": "latest"
-  },
+  "features": {},
   // "appPort": [],
   "runArgs": [
     "-e",
