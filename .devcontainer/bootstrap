@@ -62,3 +62,17 @@ if [ ! -d ${depends_path}/${name} ]; then
 fi
 
 ln -sfnT ${depends_path}/${name}/components/core_load /workspaces/ESPHome-FPGA-MatrixPanelWrapper/config/custom_components/core_load
+
+name="ESPHome-display_layout"
+if [ ! -d ${depends_path}/${name} ]; then
+        git clone \
+                --depth 1 \
+                --single-branch \
+                --branch main \
+                --recurse-submodules \
+                --shallow-submodules \
+                --jobs 8 \
+                git@github.com:w531t4/${name} ${depends_path}/${name}
+fi
+
+ln -sfnT ${depends_path}/${name}/components/display_layout /workspaces/ESPHome-FPGA-MatrixPanelWrapper/config/custom_components/display_layout
