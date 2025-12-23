@@ -45,7 +45,7 @@ if [ ! -d ${depends_path}/${name} ]; then
                 --recurse-submodules \
                 --shallow-submodules \
                 --jobs 8 \
-                https://github.com/w531t4/${name} ${depends_path}/${name}
+                git@github.com:w531t4/${name} ${depends_path}/${name}
 fi
 
 name="ESPHome-core_load"
@@ -57,7 +57,7 @@ if [ ! -d ${depends_path}/${name} ]; then
                 --recurse-submodules \
                 --shallow-submodules \
                 --jobs 8 \
-                https://github.com/w531t4/${name} ${depends_path}/${name}
+                git@github.com:w531t4/${name} ${depends_path}/${name}
 fi
 mkdir -p /workspaces/ESPHome-FPGA-MatrixPanelWrapper/config/custom_components
 ln -sfnT ${depends_path}/${name}/components/core_load /workspaces/ESPHome-FPGA-MatrixPanelWrapper/config/custom_components/core_load
