@@ -14,3 +14,4 @@ __pycache__
 # ** related to hack of building things **
 /config
 /depends
+/components/core_load
