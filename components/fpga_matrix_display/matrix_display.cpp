@@ -64,6 +64,12 @@ void MatrixDisplay::update() {
     uint32_t start_time = micros();
     static uint32_t time_sum = 0;
     static uint32_t time_count = 0;
+    if (this->dma_display_ != nullptr &&
+        this->dma_display_->consume_fpga_reset()) {
+        ESP_LOGW(TAG, "FPGA reset detected; resyncing display state");
+        this->dma_display_->resync_after_fpga_reset(
+            static_cast<uint8_t>(this->initial_brightness_));
+    }
     // uint32_t update_end_time, update_start_time;
     if (this->enabled_) {
         // Draw updates to the screen
