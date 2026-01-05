@@ -115,20 +115,24 @@ class MatrixDisplay : public display::DisplayBuffer {
      * Gets the inital brightness value from this display.
      */
     int get_initial_brightness() { return this->initial_brightness_; }
+    uint32_t get_reset_epoch() const {
+        return this->dma_display_ ? this->dma_display_->get_reset_epoch() : 0;
+    }
 
-    uint32_t get_reset_epoch() const { return this->reset_epoch_; }
     void set_pins(InternalGPIOPin *SPI_CE_pin, InternalGPIOPin *SPI_CLK_pin,
                   InternalGPIOPin *SPI_MOSI_pin,
                   InternalGPIOPin *FPGA_RESET_pin) {
         this->mxconfig_.gpio = {static_cast<int8_t>(SPI_CE_pin->get_pin()),
                                 static_cast<int8_t>(SPI_CLK_pin->get_pin()),
                                 static_cast<int8_t>(SPI_MOSI_pin->get_pin()),
-                                static_cast<int8_t>(FPGA_RESET_pin->get_pin())
+                                static_cast<int8_t>(FPGA_RESET_pin->get_pin()),
+                                FPGA_READY_PIN_DEFAULT
 
         };
     }
     void set_ready_pin(InternalGPIOPin *FPGA_READY_pin) {
-        this->fpga_ready_pin_ = FPGA_READY_pin;
+        this->mxconfig_.gpio.fpga_ready =
+            static_cast<int8_t>(FPGA_READY_pin->get_pin());
     }
 
     /**
@@ -240,10 +244,6 @@ class MatrixDisplay : public display::DisplayBuffer {
     int watchdog_interval_usec = 1000000;
     uint32_t watchdog_last_checkin = 0;
     esp_timer_handle_t periodic_timer;
-    InternalGPIOPin *fpga_ready_pin_{nullptr};
-    volatile bool fpga_reset_seen_{false};
-    uint32_t reset_epoch_{0};
-    static void fpga_ready_isr_(void *arg);
 };
 
 } // namespace matrix_display

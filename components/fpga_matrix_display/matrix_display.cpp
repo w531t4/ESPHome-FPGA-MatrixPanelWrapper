@@ -2,22 +2,12 @@
 // SPDX-FileCopyrightText: 2025 Aaron White <w531t4@gmail.com>
 // SPDX-License-Identifier: GPL-3.0-only
 #include "matrix_display.h"
-#include "driver/gpio.h"
-#include "esp_attr.h"
-#include "esp_err.h"
-#include "esphome/core/application.h"
-
 #include "esphome/core/helpers.h" // For micros()
 
 namespace esphome {
 namespace matrix_display {
 
 static const char *const TAG = "matrix_display";
-
-void IRAM_ATTR MatrixDisplay::fpga_ready_isr_(void *arg) {
-    auto *self = static_cast<MatrixDisplay *>(arg);
-    self->fpga_reset_seen_ = true;
-}
 
 /**
  * Initialize the wrapped matrix display with user parameters
@@ -42,34 +32,6 @@ void MatrixDisplay::setup() {
     dma_display_->set_worker_core(1);
     dma_display_->enable_worker(true);
     this->dma_display_->begin();
-    if (this->fpga_ready_pin_ != nullptr) {
-        this->fpga_ready_pin_->setup();
-        this->fpga_ready_pin_->pin_mode(gpio::FLAG_INPUT);
-        auto gpio_num =
-            static_cast<gpio_num_t>(this->fpga_ready_pin_->get_pin());
-        static bool isr_service_installed = false;
-        if (!isr_service_installed) {
-            esp_err_t err = gpio_install_isr_service(0);
-            if (err == ESP_OK || err == ESP_ERR_INVALID_STATE) {
-                isr_service_installed = true;
-            } else {
-                ESP_LOGE(TAG, "GPIO ISR service install failed: %s",
-                         esp_err_to_name(err));
-            }
-        }
-        if (isr_service_installed) {
-            gpio_set_intr_type(gpio_num, GPIO_INTR_NEGEDGE);
-            esp_err_t err = gpio_isr_handler_add(
-                gpio_num, &MatrixDisplay::fpga_ready_isr_, this);
-            if (err != ESP_OK) {
-                ESP_LOGE(TAG, "FPGA ready ISR attach failed: %s",
-                         esp_err_to_name(err));
-            }
-        }
-        if (!this->fpga_ready_pin_->digital_read()) {
-            this->fpga_reset_seen_ = true;
-        }
-    }
 
     if (this->use_watchdog) {
         const esp_timer_create_args_t periodic_timer_args = {
@@ -102,14 +64,11 @@ void MatrixDisplay::update() {
     uint32_t start_time = micros();
     static uint32_t time_sum = 0;
     static uint32_t time_count = 0;
-    if (this->fpga_ready_pin_ != nullptr && this->fpga_reset_seen_) {
-        if (this->fpga_ready_pin_->digital_read()) {
-            this->fpga_reset_seen_ = false;
-            this->reset_epoch_++;
-            ESP_LOGW(TAG, "FPGA reset detected; resyncing display state");
-            this->dma_display_->resync_after_fpga_reset(
-                static_cast<uint8_t>(this->current_brightness_));
-        }
+    if (this->dma_display_ != nullptr &&
+        this->dma_display_->consume_fpga_reset()) {
+        ESP_LOGW(TAG, "FPGA reset detected; resyncing display state");
+        this->dma_display_->resync_after_fpga_reset(
+            static_cast<uint8_t>(this->current_brightness_));
     }
     // uint32_t update_end_time, update_start_time;
     if (this->enabled_) {
