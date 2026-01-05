@@ -24,6 +24,7 @@ SPI_CLK_PIN = "SPI_CLK_pin"
 SPI_MOSI_PIN = "SPI_MOSI_pin"
 
 FPGA_RESET_PIN = "FPGA_RESET_pin"
+FPGA_READY_PIN = "FPGA_READY_pin"
 
 SPISPEED = "spispeed"
 
@@ -63,6 +64,7 @@ CONFIG_SCHEMA = display.FULL_DISPLAY_SCHEMA.extend(
         cv.Optional(SPI_CLK_PIN, default=14): pins.gpio_output_pin_schema,
         cv.Optional(SPI_MOSI_PIN, default=2): pins.gpio_output_pin_schema,
         cv.Optional(FPGA_RESET_PIN, default=4): pins.gpio_output_pin_schema,
+        cv.Optional(FPGA_READY_PIN, default=35): pins.gpio_input_pin_schema,
         cv.Optional(SPISPEED): cv.enum(CLOCK_SPEEDS, upper=True, space="_"),
         cv.Optional(USE_WATCHDOG, default=True): cv.boolean,
         cv.Optional(WATCHDOG_INTERVAL_USEC, default=1000000): cv.positive_int,
@@ -87,6 +89,7 @@ async def to_code(config):
     SPI_CLK_pin  = await cg.gpio_pin_expression(config[SPI_CLK_PIN])
     SPI_MOSI_pin = await cg.gpio_pin_expression(config[SPI_MOSI_PIN])
     FPGA_RESET_pin = await cg.gpio_pin_expression(config[FPGA_RESET_PIN])
+    FPGA_READY_pin = await cg.gpio_pin_expression(config[FPGA_READY_PIN])
 
     cg.add(
         var.set_pins(
@@ -94,6 +97,7 @@ async def to_code(config):
             SPI_CLK_pin,
             SPI_MOSI_pin,
             FPGA_RESET_pin,
+            FPGA_READY_pin,
         )
     )
     cg.add(var.set_initial_watchdog(config[USE_WATCHDOG]))

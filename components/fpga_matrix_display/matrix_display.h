@@ -114,15 +114,19 @@ class MatrixDisplay : public display::DisplayBuffer {
      * Gets the inital brightness value from this display.
      */
     int get_initial_brightness() { return this->initial_brightness_; }
+    uint32_t get_reset_epoch() const {
+        return this->dma_display_ ? this->dma_display_->get_reset_epoch() : 0;
+    }
 
     void set_pins(InternalGPIOPin *SPI_CE_pin, InternalGPIOPin *SPI_CLK_pin,
                   InternalGPIOPin *SPI_MOSI_pin,
-                  InternalGPIOPin *FPGA_RESET_pin) {
+                  InternalGPIOPin *FPGA_RESET_pin,
+                  InternalGPIOPin *FPGA_READY_pin) {
         this->mxconfig_.gpio = {static_cast<int8_t>(SPI_CE_pin->get_pin()),
                                 static_cast<int8_t>(SPI_CLK_pin->get_pin()),
                                 static_cast<int8_t>(SPI_MOSI_pin->get_pin()),
-                                static_cast<int8_t>(FPGA_RESET_pin->get_pin())
-
+                                static_cast<int8_t>(FPGA_RESET_pin->get_pin()),
+                                static_cast<int8_t>(FPGA_READY_pin->get_pin())
         };
     }
 
