@@ -9,6 +9,27 @@ namespace matrix_display {
 
 static const char *const TAG = "matrix_display";
 
+void MatrixDisplay::enter_test_state() {
+    this->test_state_active_ = true;
+    this->test_state_dirty_ = true;
+    this->run_test_state_sequence_();
+}
+
+void MatrixDisplay::exit_test_state() {
+    this->test_state_active_ = false;
+    this->test_state_dirty_ = false;
+}
+
+void MatrixDisplay::run_test_state_sequence_() {
+    if (!this->test_state_active_ || !this->test_state_dirty_ ||
+        this->dma_display_ == nullptr) {
+        return;
+    }
+
+    this->dma_display_->run_test_graphic();
+    this->test_state_dirty_ = false;
+}
+
 /**
  * Initialize the wrapped matrix display with user parameters
  */
@@ -61,6 +82,11 @@ void MatrixDisplay::setup() {
  * blanking in-between frames.
  */
 void MatrixDisplay::update() {
+    if (this->test_state_active_) {
+        this->run_test_state_sequence_();
+        return;
+    }
+
     uint32_t start_time = micros();
     static uint32_t time_sum = 0;
     static uint32_t time_count = 0;

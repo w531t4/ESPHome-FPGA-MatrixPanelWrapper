@@ -66,6 +66,19 @@ SPI_MOSI_PIN = "SPI_MOSI_pin"
 
 - All other options from [Display](https://esphome.io/components/display/index.html)
 
+### Test Graphic Mode
+
+A helper test graphic emits FPGA commands (clear, fill, rect, pixels, brightness, swap) so you can verify the command path before resuming normal rendering. Call `enter_test_state()` to show the graphic and `exit_test_state()` to return to the usual layout.
+
+```yaml
+on_boot:
+  then:
+    - lambda: |-
+        id(matrix).enter_test_state();
+```
+
+Trigger the logic from automations or scripts; the display stays in the test state until you call `exit_test_state()`.
+
 Note that the default pin configurations are the ones mentioned in the [ESP32-FPGA-MatrixPanel](https://github.com/w531t4/ESP32-FPGA-MatrixPanel) library. Some of these pins are used as strapping pins on ESPs. It is recommended to not use these.
 
 ## Switch
@@ -137,4 +150,3 @@ This project is based on and incorporates code from:
 - **ESPHome-HUB75-MatrixDisplayWrapper** by TillFleisch
   - https://github.com/TillFleisch/ESPHome-HUB75-MatrixDisplayWrapper
   - License: Portions are GPL-3.0-or-later, Portions are MIT
-
