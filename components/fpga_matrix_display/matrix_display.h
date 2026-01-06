@@ -178,6 +178,21 @@ class MatrixDisplay : public display::DisplayBuffer {
     void set_brightness(int brightness);
 
     /**
+     * Forces the display to show a known test graphic built from FPGA commands.
+     */
+    void enter_test_state();
+
+    /**
+     * Restores normal update behavior after a test graphic was shown.
+     */
+    void exit_test_state();
+
+    /**
+     * @return true if the display is currently locked into the test state.
+     */
+    bool is_test_state_active() const { return this->test_state_active_; }
+
+    /**
      * Gets a vector of all registered power switches from this matrix display
      */
     std::vector<matrix_display_switch::MatrixDisplaySwitch *>
@@ -198,6 +213,8 @@ class MatrixDisplay : public display::DisplayBuffer {
                    uint8_t blue);
     void swap();
     static void periodic_callback(void *arg);
+
+    void run_test_state_sequence_();
 
   protected:
     /// @brief Wrapped matrix display
@@ -238,6 +255,9 @@ class MatrixDisplay : public display::DisplayBuffer {
     int watchdog_interval_usec = 1000000;
     uint32_t watchdog_last_checkin = 0;
     esp_timer_handle_t periodic_timer;
+
+    bool test_state_active_ = false;
+    bool test_state_dirty_ = false;
 };
 
 } // namespace matrix_display
