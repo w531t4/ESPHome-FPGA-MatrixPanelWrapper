@@ -91,6 +91,7 @@ class MatrixDisplay : public display::DisplayBuffer {
      */
     void set_initial_brightness(int brightness) {
         this->initial_brightness_ = brightness;
+        this->current_brightness_ = brightness;
     };
 
     /**
@@ -114,6 +115,7 @@ class MatrixDisplay : public display::DisplayBuffer {
      * Gets the inital brightness value from this display.
      */
     int get_initial_brightness() { return this->initial_brightness_; }
+    int get_current_brightness() const { return this->current_brightness_; }
     uint32_t get_reset_epoch() const {
         return this->dma_display_ ? this->dma_display_->get_reset_epoch() : 0;
     }
@@ -225,6 +227,7 @@ class MatrixDisplay : public display::DisplayBuffer {
 
     /// @brief initial brightness of the display
     int initial_brightness_ = 128;
+    int current_brightness_ = 128;
 
     /// @brief on-off status of the display matrix
     bool enabled_ = false;
