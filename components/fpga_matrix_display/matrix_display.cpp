@@ -35,8 +35,8 @@ void MatrixDisplay::run_test_state_sequence_() {
  */
 void MatrixDisplay::periodic_callback(void *arg) {
     auto *self = static_cast<MatrixDisplay *>(arg);
-    ESP_LOGD(TAG, "interval_usec=%d has elapsed. feeding watchdog.",
-             self->watchdog_interval_usec);
+    // ESP_LOGD(TAG, "interval_usec=%d has elapsed. feeding watchdog.",
+    //          self->watchdog_interval_usec);
     self->dma_display_->fulfillWatchdog();
 }
 void MatrixDisplay::setup() {
