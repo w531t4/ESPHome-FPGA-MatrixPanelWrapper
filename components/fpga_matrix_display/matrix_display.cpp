@@ -137,6 +137,8 @@ void MatrixDisplay::dump_config() {
 
 void MatrixDisplay::set_brightness(int brightness) {
     // Wrap brightness function
+    brightness = clamp(brightness, 0, 255);
+    this->current_brightness_ = brightness;
     this->dma_display_->setBrightness8(brightness);
 }
 

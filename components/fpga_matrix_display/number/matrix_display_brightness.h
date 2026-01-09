@@ -13,7 +13,7 @@ class MatrixDisplayBrightness : public number::Number, public Component {
   public:
     void setup() {
         // Initialize number value with default display brightness
-        publish_state(display_->get_initial_brightness());
+        publish_state(display_->get_current_brightness());
     }
 
     /**
