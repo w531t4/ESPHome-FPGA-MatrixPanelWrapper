@@ -32,9 +32,21 @@ switch:
   - platform: fpga_matrix_display
     matrix_id: matrix
     name: "Power"
-    id: power
-
+    id: matrix_power
 number:
   - platform: fpga_matrix_display
     matrix_id: matrix
     name: "Brightness"
+
+light:
+  - platform: fpga_matrix_display
+    id: led_matrix_light
+    name: "LED Matrix"
+    matrix_id: matrix
+    restore_mode: RESTORE_DEFAULT_ON
+    default_transition_length: 0ms
+    gamma_correct: 1.0
+    on_turn_on:
+      - switch.turn_on: matrix_power
+    on_turn_off:
+      - switch.turn_off: matrix_power
