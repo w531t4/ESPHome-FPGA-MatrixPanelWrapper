@@ -163,16 +163,9 @@ void MatrixDisplay::write_display_data() {
                  "buffer_ not initialized!");
         return;
     }
-    // writing raw frames... failure for spi transaction size
-    // this->dma_display_->drawFrameRGB888(&this->buffer_[0],
-    // this->get_width_internal() * this->get_height_internal() * 3);
-
-    for (int y = 0; y < this->cached_height_; y++) {
-        this->dma_display_->drawRowRGB888(
-            static_cast<uint8_t>(y),
-            &this->buffer_[(y * this->cached_width_) * 3],
-            this->cached_width_ * 3);
-    }
+    const size_t frame_bytes = static_cast<size_t>(this->cached_width_) *
+                               static_cast<size_t>(this->cached_height_) * 3;
+    this->dma_display_->drawFrameRGB888(this->buffer_, frame_bytes);
     this->dma_display_->swapFrame();
 };
 
