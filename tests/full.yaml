@@ -20,7 +20,6 @@ display:
     SPI_CLK_pin: 33
     SPI_MOSI_pin: 32
     SPI_CE_pin: 18
-    FPGA_RESET_PIN: 4
     spispeed: HZ_26M
     update_interval: 100 ms
 
