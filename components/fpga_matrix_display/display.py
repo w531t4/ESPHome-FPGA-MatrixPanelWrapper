@@ -62,7 +62,7 @@ CONFIG_SCHEMA = display.FULL_DISPLAY_SCHEMA.extend(
         cv.Optional(SPI_CE_PIN, default=15): pins.gpio_output_pin_schema,
         cv.Optional(SPI_CLK_PIN, default=14): pins.gpio_output_pin_schema,
         cv.Optional(SPI_MOSI_PIN, default=2): pins.gpio_output_pin_schema,
-        cv.Optional(FPGA_READY_PIN, default=35): pins.gpio_input_pin_schema,
+        cv.Optional(FPGA_READY_PIN, default=27): pins.gpio_input_pin_schema,
         cv.Optional(SPISPEED): cv.enum(CLOCK_SPEEDS, upper=True, space="_"),
         cv.Optional(USE_WATCHDOG, default=True): cv.boolean,
         cv.Optional(WATCHDOG_INTERVAL_USEC, default=1000000): cv.positive_int,
