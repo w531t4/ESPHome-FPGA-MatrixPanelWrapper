@@ -125,8 +125,8 @@ void MatrixDisplay::dump_config() {
 
     // Log pin settings
     ESP_LOGCONFIG(
-        TAG, "  Pins: SPI_CE:%i, SPI_CLK:%i, SPI_MOSI:%i FPGA_RESET:%i",
-        cfg.gpio.ce, cfg.gpio.clk, cfg.gpio.mosi, cfg.gpio.fpga_reset);
+        TAG, "  Pins: SPI_CE:%i, SPI_CLK:%i, SPI_MOSI:%i, FPGA_READY:%i",
+        cfg.gpio.ce, cfg.gpio.clk, cfg.gpio.mosi, cfg.gpio.fpga_ready);
 
     ESP_LOGCONFIG(TAG, "  SPI Speed: %u MHz", (uint32_t)cfg.spispeed / 1000000);
     ESP_LOGCONFIG(TAG, "  Min Refresh Rate: %i", cfg.min_refresh_rate);
