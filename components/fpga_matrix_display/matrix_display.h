@@ -143,13 +143,6 @@ class MatrixDisplay : public display::DisplayBuffer {
     }
 
     /**
-     * Fills the entire display with a given color.
-     *
-     * @param color Color used for filling the entire display
-     */
-    void fill(Color color) override;
-
-    /**
      * Draws a filled rectangle on the display at the given location.
      *
      *
