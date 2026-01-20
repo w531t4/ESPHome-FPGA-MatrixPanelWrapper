@@ -143,19 +143,6 @@ class MatrixDisplay : public display::DisplayBuffer {
     }
 
     /**
-     * Draws a filled rectangle on the display at the given location.
-     *
-     *
-     * @param x1 x-coordinate of the rectangle
-     * @param y1 y-coordinate of the rectangle
-     * @param width width of the rectangle
-     * @param height height of the rectangle
-     * @param color Color used for filling the rectangle
-     */
-    // void filled_rectangle(int x1, int y1, int width, int height, Color color
-    // = display::COLOR_ON);
-
-    /**
      * Sets the on/off state of the matrix display
      *
      * @param state new state
