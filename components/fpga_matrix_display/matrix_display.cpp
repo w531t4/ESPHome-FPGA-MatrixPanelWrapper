@@ -69,7 +69,6 @@ void MatrixDisplay::setup() {
         ESP_ERROR_CHECK(esp_timer_start_periodic(periodic_timer,
                                                  this->watchdog_interval_usec));
     }
-    memset(this->buffer_, 0x00, bufsize);
     set_brightness(this->initial_brightness_);
     this->dma_display_->clearScreen();
 
