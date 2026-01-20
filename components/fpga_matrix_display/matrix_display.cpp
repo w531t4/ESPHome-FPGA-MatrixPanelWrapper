@@ -47,6 +47,10 @@ void MatrixDisplay::setup() {
     // component
     this->mxconfig_.min_refresh_rate = 1000 / update_interval_;
     display::DisplayBuffer::setup();
+    this->cached_width_ = this->get_width_internal();
+    this->cached_height_ = this->get_height_internal();
+    size_t bufsize = this->cached_width_ * this->cached_height_ * 3;
+    this->init_internal_(bufsize);
 
     // Display Setup
     dma_display_ = new MatrixPanel_FPGA_SPI(this->mxconfig_);
@@ -65,10 +69,6 @@ void MatrixDisplay::setup() {
         ESP_ERROR_CHECK(esp_timer_start_periodic(periodic_timer,
                                                  this->watchdog_interval_usec));
     }
-    this->cached_width_ = this->get_width_internal();
-    this->cached_height_ = this->get_height_internal();
-    size_t bufsize = this->cached_width_ * this->cached_height_ * 3;
-    this->init_internal_(bufsize);
     memset(this->buffer_, 0x00, bufsize);
     set_brightness(this->initial_brightness_);
     this->dma_display_->clearScreen();
