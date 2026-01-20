@@ -169,11 +169,6 @@ void MatrixDisplay::write_display_data() {
     this->dma_display_->swapFrame();
 };
 
-void MatrixDisplay::fill(Color color) {
-    // Wrap fill screen method
-    this->dma_display_->fillScreenRGB888(color.r, color.g, color.b);
-}
-
 // void MatrixDisplay::filled_rectangle(int x1, int y1, int width, int height,
 // Color color)
 // {
