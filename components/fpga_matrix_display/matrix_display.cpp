@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 #include "matrix_display.h"
 #include "esphome/core/helpers.h" // For micros()
+#include <algorithm>
 
 namespace esphome {
 namespace matrix_display {
@@ -49,8 +50,16 @@ void MatrixDisplay::setup() {
     display::DisplayBuffer::setup();
     this->cached_width_ = this->get_width_internal();
     this->cached_height_ = this->get_height_internal();
+    this->dirty_columns_.assign(this->cached_width_, 0);
+    this->column_buffer_.assign(
+        static_cast<size_t>(this->cached_height_) * 3, 0);
     size_t bufsize = this->cached_width_ * this->cached_height_ * 3;
     this->init_internal_(bufsize);
+    if (this->buffer_ == nullptr) {
+        ESP_LOGE(TAG, "Framebuffer allocation failed; display not ready");
+        return;
+    }
+    this->dirty_any_ = true; // Force initial flush so FPGA matches the buffer.
 
     // Display Setup
     dma_display_ = new MatrixPanel_FPGA_SPI(this->mxconfig_);
@@ -151,6 +160,8 @@ void HOT MatrixDisplay::draw_absolute_pixel_internal(int x, int y,
     this->buffer_[i + 0] = color.red;
     this->buffer_[i + 1] = color.green;
     this->buffer_[i + 2] = color.blue;
+    this->dirty_columns_[static_cast<size_t>(x)] = 1;
+    this->dirty_any_ = true;
 };
 void HOT MatrixDisplay::swap() { this->dma_display_->swapFrame(); }
 void MatrixDisplay::write_display_data() {
@@ -159,10 +170,57 @@ void MatrixDisplay::write_display_data() {
                  "buffer_ not initialized!");
         return;
     }
-    const size_t frame_bytes = static_cast<size_t>(this->cached_width_) *
-                               static_cast<size_t>(this->cached_height_) * 3;
-    this->dma_display_->drawFrameRGB888(this->buffer_, frame_bytes);
-    this->dma_display_->swapFrame();
+    // Fast path: nothing changed since the last flush.
+    if (!this->dirty_any_)
+        return;
+
+    const int width = this->cached_width_;
+    const int height = this->cached_height_;
+    const size_t column_bytes = static_cast<size_t>(height) * 3;
+    bool any_sent = false;
+    bool all_sent = true;
+
+    for (int x = 0; x < width; ++x) {
+        if (this->dirty_columns_[static_cast<size_t>(x)] == 0)
+            continue;
+        // Avoid overrunning the SPI worker queue; retry next update.
+        if (!this->dma_display_->queue_has_space()) {
+            all_sent = false;
+            break;
+        }
+        // Pack a column (row-major buffer -> column-major payload).
+        for (int y = 0; y < height; ++y) {
+            const size_t src =
+                (static_cast<size_t>(y) * width + x) * 3;
+            const size_t dst = static_cast<size_t>(y) * 3;
+            this->column_buffer_[dst] = this->buffer_[src];
+            this->column_buffer_[dst + 1] = this->buffer_[src + 1];
+            this->column_buffer_[dst + 2] = this->buffer_[src + 2];
+        }
+        this->dma_display_->drawColumnRGB888(
+            x, this->column_buffer_.data(), column_bytes);
+        this->dirty_columns_[static_cast<size_t>(x)] = 0;
+        any_sent = true;
+    }
+
+    // Only swap/copy if we issued at least one column update.
+    if (any_sent) {
+        this->dma_display_->swapFrame();
+        this->dma_display_->copyFrame();
+    }
+
+    // Clear the dirty flag only if all pending columns were flushed.
+    if (all_sent) {
+        this->dirty_any_ = false;
+    } else {
+        this->dirty_any_ = false;
+        for (int x = 0; x < width; ++x) {
+            if (this->dirty_columns_[static_cast<size_t>(x)] != 0) {
+                this->dirty_any_ = true;
+                break;
+            }
+        }
+    }
 };
 
 } // namespace matrix_display
