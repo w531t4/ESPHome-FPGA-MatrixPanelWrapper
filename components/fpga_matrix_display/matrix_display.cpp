@@ -4,6 +4,10 @@
 #include "matrix_display.h"
 #include "esphome/core/helpers.h" // For micros()
 #include <algorithm>
+#include <cstring>
+#include <esp_heap_caps.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 
 namespace esphome {
 namespace matrix_display {
@@ -50,13 +54,24 @@ void MatrixDisplay::setup() {
     display::DisplayBuffer::setup();
     this->cached_width_ = this->get_width_internal();
     this->cached_height_ = this->get_height_internal();
-    this->dirty_columns_.assign(this->cached_width_, 0);
-    this->column_buffer_.assign(
-        static_cast<size_t>(this->cached_height_) * 3, 0);
+    // Split the panel into fixed-width chunks for dirty tracking.
+    this->chunk_count_ =
+        (this->cached_width_ + kChunkWidth - 1) / kChunkWidth;
+    this->dirty_chunks_.assign(this->chunk_count_, 0);
     size_t bufsize = this->cached_width_ * this->cached_height_ * 3;
     this->init_internal_(bufsize);
     if (this->buffer_ == nullptr) {
         ESP_LOGE(TAG, "Framebuffer allocation failed; display not ready");
+        return;
+    }
+    // Preallocate a single DMA-capable chunk buffer reused for each flush.
+    const int max_chunk_width = std::min(kChunkWidth, this->cached_width_);
+    this->chunk_buffer_bytes_ =
+        static_cast<size_t>(max_chunk_width) * this->cached_height_ * 3;
+    this->chunk_buffer_ = static_cast<uint8_t *>(
+        heap_caps_malloc(this->chunk_buffer_bytes_, MALLOC_CAP_DMA));
+    if (this->chunk_buffer_ == nullptr) {
+        ESP_LOGE(TAG, "Chunk buffer allocation failed; display not ready");
         return;
     }
     this->dirty_any_ = true; // Force initial flush so FPGA matches the buffer.
@@ -160,14 +175,19 @@ void HOT MatrixDisplay::draw_absolute_pixel_internal(int x, int y,
     this->buffer_[i + 0] = color.red;
     this->buffer_[i + 1] = color.green;
     this->buffer_[i + 2] = color.blue;
-    this->dirty_columns_[static_cast<size_t>(x)] = 1;
+    // Track dirty state at the chunk level to avoid per-column updates.
+    if (!this->dirty_chunks_.empty()) {
+        const size_t chunk = static_cast<size_t>(x / kChunkWidth);
+        this->dirty_chunks_[chunk] = 1;
+    }
+    // Any pixel write means at least one chunk must be flushed.
     this->dirty_any_ = true;
 };
 void HOT MatrixDisplay::swap() { this->dma_display_->swapFrame(); }
 void MatrixDisplay::write_display_data() {
-    if (this->buffer_ == nullptr) {
+    if (this->buffer_ == nullptr || this->chunk_buffer_ == nullptr) {
         ESP_LOGE("MatrixDisplay:write_display_data",
-                 "buffer_ not initialized!");
+                 "buffer_ or chunk_buffer_ not initialized!");
         return;
     }
     // Fast path: nothing changed since the last flush.
@@ -176,46 +196,72 @@ void MatrixDisplay::write_display_data() {
 
     const int width = this->cached_width_;
     const int height = this->cached_height_;
-    const size_t column_bytes = static_cast<size_t>(height) * 3;
+    // kChunkWidth is a fixed upper bound; edge chunks may be narrower.
+    const int chunk_width = kChunkWidth;
+    const bool worker_enabled = this->dma_display_->is_worker_enabled();
+    // Flush only the chunks marked dirty to reduce SPI traffic.
     bool any_sent = false;
     bool all_sent = true;
 
-    for (int x = 0; x < width; ++x) {
-        if (this->dirty_columns_[static_cast<size_t>(x)] == 0)
+    for (int chunk = 0; chunk < this->chunk_count_; ++chunk) {
+        if (this->dirty_chunks_[static_cast<size_t>(chunk)] == 0)
             continue;
-        // Avoid overrunning the SPI worker queue; retry next update.
-        if (!this->dma_display_->queue_has_space()) {
+        // Avoid reusing the shared chunk buffer while worker jobs are pending.
+        if (worker_enabled) {
+            // Wait for the worker to finish any in-flight SPI transfer before
+            // repacking the shared chunk buffer.
+            while (!this->dma_display_->worker_is_idle()) {
+                vTaskDelay(1);
+            }
+        }
+        const int x = chunk * chunk_width;
+        const int w = std::min(chunk_width, width - x);
+        // Each rect payload is packed row-major: w * height * 3 bytes.
+        const size_t rect_bytes =
+            static_cast<size_t>(w) * static_cast<size_t>(height) * 3;
+        if (rect_bytes > this->chunk_buffer_bytes_) {
+            ESP_LOGE(TAG, "Chunk buffer too small for %dx%d rect", w, height);
             all_sent = false;
             break;
         }
-        // Pack a column (row-major buffer -> column-major payload).
+        // Pack row-major data for drawRectRGB888_prealloc.
+        size_t dst = 0;
         for (int y = 0; y < height; ++y) {
             const size_t src =
                 (static_cast<size_t>(y) * width + x) * 3;
-            const size_t dst = static_cast<size_t>(y) * 3;
-            this->column_buffer_[dst] = this->buffer_[src];
-            this->column_buffer_[dst + 1] = this->buffer_[src + 1];
-            this->column_buffer_[dst + 2] = this->buffer_[src + 2];
+            const size_t span = static_cast<size_t>(w) * 3;
+            std::memcpy(this->chunk_buffer_ + dst, this->buffer_ + src, span);
+            dst += span;
         }
-        this->dma_display_->drawColumnRGB888(
-            x, this->column_buffer_.data(), column_bytes);
-        this->dirty_columns_[static_cast<size_t>(x)] = 0;
+        // Stream the chunk as a rect write using the preallocated buffer.
+        this->dma_display_->drawRectRGB888_prealloc(
+            x, 0, w, height, this->chunk_buffer_, rect_bytes);
+        if (worker_enabled) {
+            // Ensure the worker has finished consuming the buffer before reuse.
+            while (!this->dma_display_->worker_is_idle()) {
+                vTaskDelay(1);
+            }
+        }
+        // Mark the chunk clean only after a successful send.
+        this->dirty_chunks_[static_cast<size_t>(chunk)] = 0;
         any_sent = true;
     }
 
-    // Only swap/copy if we issued at least one column update.
+    // Only swap/copy if we issued at least one chunk update.
     if (any_sent) {
+        // Commit the staged updates to the visible buffer.
         this->dma_display_->swapFrame();
         this->dma_display_->copyFrame();
     }
 
-    // Clear the dirty flag only if all pending columns were flushed.
+    // Clear the dirty flag only if all pending chunks were flushed.
     if (all_sent) {
         this->dirty_any_ = false;
     } else {
+        // Recompute dirty_any_ based on any remaining dirty chunks.
         this->dirty_any_ = false;
-        for (int x = 0; x < width; ++x) {
-            if (this->dirty_columns_[static_cast<size_t>(x)] != 0) {
+        for (int chunk = 0; chunk < this->chunk_count_; ++chunk) {
+            if (this->dirty_chunks_[static_cast<size_t>(chunk)] != 0) {
                 this->dirty_any_ = true;
                 break;
             }
