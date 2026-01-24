@@ -232,12 +232,15 @@ class MatrixDisplay : public display::DisplayBuffer {
     void draw_absolute_pixel_internal(int x, int y, Color color) override;
     int cached_width_ = 0;
     int cached_height_ = 0;
+    static constexpr int kChunkWidth = 16;
     bool use_watchdog = false;
     int watchdog_interval_usec = 1000000;
     uint32_t watchdog_last_checkin = 0;
     esp_timer_handle_t periodic_timer;
-    std::vector<uint8_t> dirty_columns_;
-    std::vector<uint8_t> column_buffer_;
+    std::vector<uint8_t> dirty_chunks_;
+    uint8_t *chunk_buffer_ = nullptr;
+    size_t chunk_buffer_bytes_ = 0;
+    int chunk_count_ = 0;
     bool dirty_any_ = false; // Fast path: skip flushing when no columns changed.
 
     bool test_state_active_ = false;
