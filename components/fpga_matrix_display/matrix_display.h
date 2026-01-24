@@ -4,6 +4,7 @@
 #pragma once
 
 #include <utility>
+#include <vector>
 
 #include "esphome/components/display/display_buffer.h"
 #include "esphome/core/component.h"
@@ -235,6 +236,9 @@ class MatrixDisplay : public display::DisplayBuffer {
     int watchdog_interval_usec = 1000000;
     uint32_t watchdog_last_checkin = 0;
     esp_timer_handle_t periodic_timer;
+    std::vector<uint8_t> dirty_columns_;
+    std::vector<uint8_t> column_buffer_;
+    bool dirty_any_ = false; // Fast path: skip flushing when no columns changed.
 
     bool test_state_active_ = false;
     bool test_state_dirty_ = false;
