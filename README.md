@@ -61,6 +61,7 @@ SPI_MOSI_PIN = "SPI_MOSI_pin"
 - **SPI_CLK_PIN**(**Optional**, [Pin](https://esphome.io/guides/configuration-types.html#config-pin)): Pin connected to the SCLK pin on the FPGA. Defaults to `14`.
 - **SPI_MOSI_PIN**(**Optional**, [Pin](https://esphome.io/guides/configuration-types.html#config-pin)): Pin connected to the MOSI pin on the FPGA. Defaults to `2`.
 - **FPGA_RESETSTATUS_PIN**(**Optional**, [Pin](https://esphome.io/guides/configuration-types.html#config-pin)): Input pin connected to the FPGA resetstatus indicator. When provided, the driver uses it to detect FPGA resets (falling edge or low-at-boot) and resync the display state. Defaults to `27`.
+- **FPGA_BUSY_PIN**(**Optional**, [Pin](https://esphome.io/guides/configuration-types.html#config-pin)): Input pin connected to the FPGA BUSY line (wifi_gpio35). When set, the driver waits for BUSY to go low after each command before sending the next. No internal pull-up is enabled. Defaults to `35`.
 
 - **spispeed**(**Optional**): I2SSpeed used for configuring the display. Select one of `HZ_8M`, `HZ_10M`, `HZ_15M`, `HZ_16M`,`HZ_20M`.
 - **use_custom_library**(**Optional**, boolean): If set to `true` a custom library must be defined using `platformio_options:lib_deps`. Defaults to `false`. See [this example](custom_library.yaml) for more details.
