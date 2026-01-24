@@ -122,11 +122,11 @@ class MatrixDisplay : public display::DisplayBuffer {
 
     void set_pins(InternalGPIOPin *SPI_CE_pin, InternalGPIOPin *SPI_CLK_pin,
                   InternalGPIOPin *SPI_MOSI_pin,
-                  InternalGPIOPin *FPGA_READY_pin) {
+                  InternalGPIOPin *FPGA_RESETSTATUS_pin) {
         this->mxconfig_.gpio = {static_cast<int8_t>(SPI_CE_pin->get_pin()),
                                 static_cast<int8_t>(SPI_CLK_pin->get_pin()),
                                 static_cast<int8_t>(SPI_MOSI_pin->get_pin()),
-                                static_cast<int8_t>(FPGA_READY_pin->get_pin())};
+                                static_cast<int8_t>(FPGA_RESETSTATUS_pin->get_pin())};
     }
 
     /**
