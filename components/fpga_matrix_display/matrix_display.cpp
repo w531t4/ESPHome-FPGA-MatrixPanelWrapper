@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <cstring>
 #include <esp_heap_caps.h>
+// Enable the following to expose logging for this library above ERROR
+// #include <esp_log.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
@@ -46,6 +48,9 @@ void MatrixDisplay::periodic_callback(void *arg) {
 }
 void MatrixDisplay::setup() {
     ESP_LOGCONFIG(TAG, "Setting up MatrixDisplay...");
+    // Enable the following to expose logging for this library above ERROR
+    // Must match tag of events
+    // esp_log_level_set("MatrixPanel", ESP_LOG_DEBUG);
     ESP_LOGD("MatrixDisplay", "Framebuffer size: %dx%d",
              this->get_width_internal(), this->get_height_internal());
     // The min refresh rate correlates with the update frequency of the
