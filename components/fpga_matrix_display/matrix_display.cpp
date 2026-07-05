@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: 2019 ESPHome
-// SPDX-FileCopyrightText: 2025 Aaron White <w531t4@gmail.com>
+// SPDX-FileCopyrightText: 2025, 2026 Aaron White <w531t4@gmail.com>
 // SPDX-License-Identifier: GPL-3.0-only
 #include "matrix_display.h"
 #include "esphome/core/helpers.h" // For micros()
@@ -116,8 +116,6 @@ void MatrixDisplay::update() {
     }
 
     uint32_t start_time = micros();
-    static uint32_t time_sum = 0;
-    static uint32_t time_count = 0;
     if (this->dma_display_ != nullptr &&
         this->dma_display_->consume_fpga_reset()) {
         ESP_LOGW(TAG, "FPGA reset detected; resyncing display state");
@@ -138,12 +136,9 @@ void MatrixDisplay::update() {
     }
     uint32_t end_time = micros();
     uint32_t elapsed_time = end_time - start_time;
-    time_sum = time_sum + elapsed_time;
-    time_count++;
-    if (time_count > 2 && (time_count % 100) == 0) {
-        ESP_LOGD(TAG, "update() took %u microseconds. avg=%u", elapsed_time,
-                 time_sum / time_count);
-    }
+    // Feed the FIFO so the update-duration sensor can report a moving average
+    // over the last kUpdateTimeWindow frames instead of spamming the log.
+    this->push_update_micros_(elapsed_time);
 }
 
 void MatrixDisplay::dump_config() {

@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: 2019 ESPHome
-// SPDX-FileCopyrightText: 2025 Aaron White <w531t4@gmail.com>
+// SPDX-FileCopyrightText: 2025, 2026 Aaron White <w531t4@gmail.com>
 // SPDX-License-Identifier: GPL-3.0-only
 #pragma once
 
@@ -117,6 +117,28 @@ class MatrixDisplay : public display::DisplayBuffer {
      */
     int get_initial_brightness() { return this->initial_brightness_; }
     int get_current_brightness() const { return this->current_brightness_; }
+
+    /**
+     * @return duration of the most recent update() call, in microseconds.
+     */
+    uint32_t get_last_update_micros() const {
+        return this->last_update_micros_;
+    }
+
+    /**
+     * Returns the moving average of recent update() durations, in microseconds
+     * (smoothed over ~kUpdateTimeWindow frames). Non-mutating, so it can be read
+     * at any cadence. Falls back to the last sample before the window has
+     * filled, or 0 if no update() has run yet.
+     */
+    uint32_t get_avg_update_micros() const {
+        if (this->update_time_count_ == 0)
+            return this->last_update_micros_;
+        // sum stays near kUpdateTimeWindow * mean, so it cannot overflow and the
+        // quotient fits comfortably in 32 bits.
+        return static_cast<uint32_t>(this->update_time_sum_ /
+                                     this->update_time_count_);
+    }
     uint32_t get_reset_epoch() const {
         return this->dma_display_ ? this->dma_display_->get_reset_epoch() : 0;
     }
@@ -206,6 +228,42 @@ class MatrixDisplay : public display::DisplayBuffer {
     /// @brief initial brightness of the display
     int initial_brightness_ = 128;
     int current_brightness_ = 128;
+
+    /// @brief duration of the most recent update() call, in microseconds
+    uint32_t last_update_micros_ = 0;
+
+    /// @brief smoothing window (in frames) for the reported moving average.
+    /// Larger = smoother/slower to react. Old samples decay exponentially
+    /// rather than being stored, so memory is fixed regardless of the window.
+    static constexpr uint32_t kUpdateTimeWindow = 64;
+    /// @brief running sum, held near kUpdateTimeWindow * mean (see push helper)
+    uint64_t update_time_sum_ = 0;
+    /// @brief samples seen so far, saturating at kUpdateTimeWindow
+    uint32_t update_time_count_ = 0;
+
+    /**
+     * Folds an update() duration into the moving average. While warming up it
+     * is a plain cumulative mean; once kUpdateTimeWindow samples have been seen
+     * it drops one window-average worth per new sample, keeping the sum near
+     * kUpdateTimeWindow * mean. Bounded, overflow-free, and O(1) in both time
+     * and memory -- no per-sample buffer (EMA with alpha = 1 / window).
+     *
+     * @param elapsed duration of the update() call, in microseconds
+     */
+    void push_update_micros_(uint32_t elapsed) {
+        this->last_update_micros_ = elapsed;
+        if (this->update_time_count_ < kUpdateTimeWindow) {
+            // Warm-up: exact cumulative mean until the window fills.
+            this->update_time_sum_ += elapsed;
+            this->update_time_count_++;
+        } else {
+            // Steady state: drop one window-average, add the new sample.
+            // sum >= window_avg always, so the subtraction cannot underflow.
+            uint64_t window_avg = this->update_time_sum_ / kUpdateTimeWindow;
+            this->update_time_sum_ =
+                this->update_time_sum_ - window_avg + elapsed;
+        }
+    }
 
     /// @brief on-off status of the display matrix
     bool enabled_ = false;

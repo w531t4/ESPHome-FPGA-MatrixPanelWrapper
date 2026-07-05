@@ -28,6 +28,13 @@ display:
     lambda: |-
       it.print(0, 0, id(roboto), "Hello World!");
 
+sensor:
+  - platform: fpga_matrix_display
+    matrix_id: matrix
+    name: "Update Duration"
+    id: matrix_update_duration
+    update_interval: 20s
+    
 switch:
   - platform: fpga_matrix_display
     matrix_id: matrix
