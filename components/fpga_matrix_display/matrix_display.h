@@ -113,6 +113,17 @@ class MatrixDisplay : public display::DisplayBuffer {
     };
 
     /**
+     * Sets the max time (ms) a display flush waits for the SPI worker to drain
+     * before giving up on the frame. Caps the wait so an unresponsive FPGA
+     * can't make update() block forever and leave the device frozen.
+     *
+     * @param ms timeout in milliseconds
+     */
+    void set_worker_idle_timeout_ms(uint32_t ms) {
+        this->worker_idle_timeout_ms_ = ms;
+    };
+
+    /**
      * Gets the inital brightness value from this display.
      */
     int get_initial_brightness() { return this->initial_brightness_; }
@@ -293,6 +304,9 @@ class MatrixDisplay : public display::DisplayBuffer {
     static constexpr int kChunkWidth = 16;
     bool use_watchdog = false;
     int watchdog_interval_usec = 1000000;
+    /// @brief max time (ms) a flush waits for the SPI worker before giving up on
+    /// the frame; keeps an unresponsive FPGA from making update() block forever
+    uint32_t worker_idle_timeout_ms_ = 1500;
     uint32_t watchdog_last_checkin = 0;
     esp_timer_handle_t periodic_timer;
     std::vector<uint8_t> dirty_chunks_;
