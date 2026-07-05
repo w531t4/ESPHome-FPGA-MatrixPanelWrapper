@@ -31,6 +31,7 @@ SPISPEED = "spispeed"
 USE_CUSTOM_LIBRARY = "use_custom_library"
 USE_WATCHDOG = "use_watchdog"
 WATCHDOG_INTERVAL_USEC = "watchdog_interval_usec"
+WORKER_IDLE_TIMEOUT_MS = "worker_idle_timeout_ms"
 
 matrix_display_ns = cg.esphome_ns.namespace("matrix_display")
 MatrixDisplay = matrix_display_ns.class_(
@@ -68,6 +69,10 @@ CONFIG_SCHEMA = display.FULL_DISPLAY_SCHEMA.extend(
         cv.Optional(SPISPEED): cv.enum(CLOCK_SPEEDS, upper=True, space="_"),
         cv.Optional(USE_WATCHDOG, default=True): cv.boolean,
         cv.Optional(WATCHDOG_INTERVAL_USEC, default=1000000): cv.positive_int,
+        # Max time a display flush waits for the SPI worker to drain before
+        # giving up on the frame. Caps the wait so an unresponsive FPGA
+        # can't make update() block forever and leave the device frozen.
+        cv.Optional(WORKER_IDLE_TIMEOUT_MS, default=1500): cv.positive_int,
     }
 )
 
@@ -75,7 +80,7 @@ CONFIG_SCHEMA = display.FULL_DISPLAY_SCHEMA.extend(
 async def to_code(config):
     if not config[USE_CUSTOM_LIBRARY]:
         cg.add_library(
-            "https://github.com/w531t4/ESP32-FPGA-MatrixPanel#v2.7.0",
+            "https://github.com/w531t4/ESP32-FPGA-MatrixPanel#v2.8.0",
             None,
         )
 
@@ -102,6 +107,7 @@ async def to_code(config):
     )
     cg.add(var.set_initial_watchdog(config[USE_WATCHDOG]))
     cg.add(var.set_initial_watchdog_interval_usec(config[WATCHDOG_INTERVAL_USEC]))
+    cg.add(var.set_worker_idle_timeout_ms(config[WORKER_IDLE_TIMEOUT_MS]))
 
     if SPISPEED in config:
         cg.add(var.set_spispeed(config[SPISPEED]))

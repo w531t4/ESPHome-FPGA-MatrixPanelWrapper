@@ -44,6 +44,9 @@ void MatrixDisplay::periodic_callback(void *arg) {
     auto *self = static_cast<MatrixDisplay *>(arg);
     // ESP_LOGD(TAG, "interval_usec=%d has elapsed. feeding watchdog.",
     //          self->watchdog_interval_usec);
+    // Skip feeding the FPGA watchdog while it is held in reset/config
+    if (self->dma_display_ == nullptr || !self->dma_display_->fpga_ready())
+        return;
     self->dma_display_->fulfillWatchdog();
 }
 void MatrixDisplay::setup() {
@@ -114,6 +117,11 @@ void MatrixDisplay::update() {
         this->run_test_state_sequence_();
         return;
     }
+
+    // While the FPGA is held in reset/config, don't drive it over SPI --
+    // doing so stalls on its handshake pins and can stall the main loop.
+    if (this->dma_display_ != nullptr && !this->dma_display_->fpga_ready())
+        return;
 
     uint32_t start_time = micros();
     if (this->dma_display_ != nullptr &&
@@ -210,8 +218,15 @@ void MatrixDisplay::write_display_data() {
         if (worker_enabled) {
             // Wait for the worker to finish any in-flight SPI transfer before
             // repacking the shared chunk buffer.
-            while (!this->dma_display_->worker_is_idle()) {
+            uint32_t wait_start = millis();
+            while (!this->dma_display_->worker_is_idle() &&
+                   (millis() - wait_start) <= this->worker_idle_timeout_ms_) {
                 vTaskDelay(1);
+            }
+            if (!this->dma_display_->worker_is_idle()) {
+                ESP_LOGW(TAG, "SPI worker stalled; deferring flush (FPGA busy?)");
+                all_sent = false;
+                break;
             }
         }
         const int x = chunk * chunk_width;
@@ -238,8 +253,15 @@ void MatrixDisplay::write_display_data() {
             x, 0, w, height, this->chunk_buffer_, rect_bytes);
         if (worker_enabled) {
             // Ensure the worker has finished consuming the buffer before reuse.
-            while (!this->dma_display_->worker_is_idle()) {
+            uint32_t wait_start = millis();
+            while (!this->dma_display_->worker_is_idle() &&
+                   (millis() - wait_start) <= this->worker_idle_timeout_ms_) {
                 vTaskDelay(1);
+            }
+            if (!this->dma_display_->worker_is_idle()) {
+                ESP_LOGW(TAG, "SPI worker stalled; deferring flush (FPGA busy?)");
+                all_sent = false;
+                break;
             }
         }
         // Mark the chunk clean only after a successful send.
