@@ -88,7 +88,11 @@ void MatrixDisplay::setup() {
     dma_display_ = new MatrixPanel_FPGA_SPI(this->mxconfig_);
     dma_display_->set_worker_core(1);
     dma_display_->enable_worker(true);
-    this->dma_display_->begin();
+    if (!this->dma_display_->begin()) {
+        ESP_LOGE(TAG, "MatrixPanel begin() failed; display disabled");
+        this->mark_failed();
+        return;
+    }
 
     if (this->use_watchdog) {
         const esp_timer_create_args_t periodic_timer_args = {
