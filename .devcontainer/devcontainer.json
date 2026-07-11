@@ -40,6 +40,7 @@
         "python.defaultInterpreterPath": "/home/vscode/.local/venv/bin/python",
         "python.pythonPath": "/home/vscode/.local/venv/bin/python",
         "python.terminal.activateEnvInCurrentTerminal": true,
+        "python-envs.terminal.autoActivationType": "shellStartup",
         "python.testing.pytestArgs": ["--no-cov"],
         "pylint.importStrategy": "fromEnvironment",
         "python.analysis.typeCheckingMode": "basic",
