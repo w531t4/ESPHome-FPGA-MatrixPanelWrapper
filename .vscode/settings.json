@@ -1,52 +1,52 @@
 {
-    "files.exclude": {
-        ".esphome**": true,
-        ".pytest_cache**": true,
-        ".venv": true,
-        "**/__pycache__/**": true,
+  "files.exclude": {
+    ".esphome**": true,
+    ".pytest_cache**": true,
+    ".venv": true,
+    "**/__pycache__/**": true,
 
-        // "components/fpga_matrix_display/switch": true,
-        // "components/fpga_matrix_display/number": true,
+    // "components/fpga_matrix_display/switch": true,
+    // "components/fpga_matrix_display/number": true,
 
-        // ** other **
-        // "complex_matrix_config.yaml": true,
-        // "custom_library.yaml": true,
-        // "example.yaml": true,
+    // ** other **
+    // "complex_matrix_config.yaml": true,
+    // "custom_library.yaml": true,
+    // "example.yaml": true,
 
-        // ** related to hack of building things **
-        "config/components": true,
-        "config/.esphome": true,
-        "config/sm*": true,
-        "config/rat*": true,
-        "config/secret*": true,
-        "config/esphome": true,
-        "config/custom_*": true,
-        "config/.layout*": true,
-        "config/fonts*": true,
-        "config/images*": true,
-        "config/unused*": true,
-        "config/[ns]*": true,
-        "config/.board*": true,
-        "config/.motion*": true,
-        "config/.[bdiglsm]*": true,
+    // ** related to hack of building things **
+    "config/components": true,
+    "config/.esphome": true,
+    "config/sm*": true,
+    "config/rat*": true,
+    "config/secret*": true,
+    "config/esphome": true,
+    "config/custom_*": true,
+    "config/.layout*": true,
+    "config/fonts*": true,
+    "config/images*": true,
+    "config/unused*": true,
+    "config/[ns]*": true,
+    "config/.board*": true,
+    "config/.motion*": true,
+    "config/.[bdiglsm]*": true,
 
-        // depends
-        "depends/ESP32-FPGA-MatrixPanel/[.0-9A-Za-rt-z]*": true,
-        "depends/ESP32-FPGA-MatrixPanel/src/[a-ln-zA-Z0-9]*": true,
-        "depends/ESP32-FPGA-MatrixPanel/src/main.cpp": true,
-        "depends/ESP32-FPGA-MatrixPanel/sdkconfig": true,
-        "depends/ESP32-FPGA-MatrixPanel/setup_env.sh": true,
-        "depends/ESPHome-core_load/[.0-9abd-zA-Z]*": true,
+    // depends
+    "depends/ESP32-FPGA-MatrixPanel/[.0-9A-Za-rt-z]*": true,
+    "depends/ESP32-FPGA-MatrixPanel/src/[a-ln-zA-Z0-9]*": true,
+    "depends/ESP32-FPGA-MatrixPanel/src/main.cpp": true,
+    "depends/ESP32-FPGA-MatrixPanel/sdkconfig": true,
+    "depends/ESP32-FPGA-MatrixPanel/setup_env.sh": true,
+    "depends/ESPHome-core_load/[.0-9abd-zA-Z]*": true,
 
-        // ** if compiling from source **
-        "esphome*": true,
-    },
-    "editor.formatOnSave": true,
-    "files.trimTrailingWhitespace": true,
-    "files.associations": {
-        "*.yaml": "esphome",
-        "*.yml": "esphome"
-    },
-    "git.autoRepositoryDetection": "subFolders",
-    "git.repositoryScanMaxDepth": 2
+    // ** if compiling from source **
+    "esphome*": true
+  },
+  "editor.formatOnSave": true,
+  "files.trimTrailingWhitespace": true,
+  "files.associations": {
+    "*.yaml": "esphome",
+    "*.yml": "esphome"
+  },
+  "git.autoRepositoryDetection": "subFolders",
+  "git.repositoryScanMaxDepth": 2
 }
