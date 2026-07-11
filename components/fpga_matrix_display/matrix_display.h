@@ -166,6 +166,30 @@ class MatrixDisplay : public display::DisplayBuffer {
     }
 
     /**
+     * Sets the pins for the status readback SPI bus (FPGA reg_spi_responder).
+     * The ESP32 is master on this bus: sck/cs outputs, miso input. The
+     * feature stays disabled unless all three are configured.
+     */
+    void set_status_pins(InternalGPIOPin *STATUS_SPI_SCK_pin,
+                         InternalGPIOPin *STATUS_SPI_CS_pin,
+                         InternalGPIOPin *STATUS_SPI_MISO_pin) {
+        this->mxconfig_.status_gpio.sck =
+            static_cast<int8_t>(STATUS_SPI_SCK_pin->get_pin());
+        this->mxconfig_.status_gpio.cs =
+            static_cast<int8_t>(STATUS_SPI_CS_pin->get_pin());
+        this->mxconfig_.status_gpio.miso =
+            static_cast<int8_t>(STATUS_SPI_MISO_pin->get_pin());
+    }
+
+    /**
+     * Reads the FPGA status flags over the status SPI. Synchronous (takes
+     * the SPI mutex). False when the display isn't up, the status bus isn't
+     * configured, or no fresh frame could be read; failures are logged with
+     * the library's failure reason and the raw frame bytes.
+     */
+    bool read_status_flags(MatrixPanel_FPGA_SPI::FpgaStatusFlags &out);
+
+    /**
      * Sets the clock speed
      *
      * @param speed i2s clock speed
