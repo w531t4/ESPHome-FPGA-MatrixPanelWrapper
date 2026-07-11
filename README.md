@@ -54,14 +54,16 @@ display:
 - **chain_length**(**Optional**, int): The number of panels chained one after another. Defaults to `1`.
 - **brightness**(**Optional**, int): Initial brightness of the display (0-255). Defaults to `128`.
 
-SPI_CE_PIN =  "SPI_CE_pin"
-SPI_CLK_PIN = "SPI_CLK_pin"
-SPI_MOSI_PIN = "SPI_MOSI_pin"
 - **SPI_CE_PIN**(**Optional**, [Pin](https://esphome.io/guides/configuration-types.html#config-pin)): Pin connected to the S_CE pin on the FPGA. Defaults to `15`.
 - **SPI_CLK_PIN**(**Optional**, [Pin](https://esphome.io/guides/configuration-types.html#config-pin)): Pin connected to the SCLK pin on the FPGA. Defaults to `14`.
 - **SPI_MOSI_PIN**(**Optional**, [Pin](https://esphome.io/guides/configuration-types.html#config-pin)): Pin connected to the MOSI pin on the FPGA. Defaults to `2`.
 - **FPGA_RESETSTATUS_PIN**(**Optional**, [Pin](https://esphome.io/guides/configuration-types.html#config-pin)): Input pin connected to the FPGA resetstatus indicator. When provided, the driver uses it to detect FPGA resets (falling edge or low-at-boot) and resync the display state. Defaults to `27`.
 - **FPGA_BUSY_PIN**(**Optional**, [Pin](https://esphome.io/guides/configuration-types.html#config-pin)): Input pin connected to the FPGA BUSY line (wifi_gpio35). When set, the driver waits for BUSY to go low after each command before sending the next. No internal pull-up is enabled. Defaults to `35`.
+- **STATUS_SPI_SCK_PIN**(**Optional**, [Pin](https://esphome.io/guides/configuration-types.html#config-pin)): Output pin driving the clock of the status readback SPI bus (FPGA `reg_spi_responder`).
+- **STATUS_SPI_CS_PIN**(**Optional**, [Pin](https://esphome.io/guides/configuration-types.html#config-pin)): Output pin driving the chip select of the status readback SPI bus.
+- **STATUS_SPI_MISO_PIN**(**Optional**, [Pin](https://esphome.io/guides/configuration-types.html#config-pin)): Input pin reading data from the status readback SPI bus.
+
+The three `STATUS_SPI_*` pins must be given together or not at all; omitting them disables status readback entirely. The FPGA bitstream must be built with `USE_STATUS_SPI` for the responder to exist on the other end. `dump_config` reports `Status SPI ready: YES/NO`, and failed status reads are logged at DEBUG level with the failure reason and the raw frame bytes.
 
 - **spispeed**(**Optional**): I2SSpeed used for configuring the display. Select one of `HZ_8M`, `HZ_10M`, `HZ_15M`, `HZ_16M`,`HZ_20M`.
 - **use_custom_library**(**Optional**, boolean): If set to `true` a custom library must be defined using `platformio_options:lib_deps`. Defaults to `false`. See [this example](custom_library.yaml) for more details.
@@ -96,6 +98,30 @@ This number entity can be used to set the display brightness. In combination wit
 
 - **matrix_id**(**Required**, string): The matrix display entity to which this brightness value belongs.
 - All other options from [Number](https://esphome.io/components/number/index.html#config-number)
+
+## Sensor
+
+Reports the moving average duration of display updates in microseconds.
+
+- **matrix_id**(**Required**, string): The matrix display entity this sensor measures.
+- All other options from [Sensor](https://esphome.io/components/sensor/index.html#config-sensor), including `update_interval` (defaults to `60s`).
+
+## Status Binary Sensor
+
+Polls one FPGA status flag over the status readback SPI at its `update_interval` and publishes it. Requires the `STATUS_SPI_*` pins to be configured on the display; when a read fails, the sensor keeps its last state.
+
+```yaml
+binary_sensor:
+  - platform: fpga_matrix_display
+    matrix_id: matrix
+    name: "FPGA Ready"
+    type: fpga_ready
+    update_interval: 10s
+```
+
+- **matrix_id**(**Required**, string): The matrix display entity this sensor reads from.
+- **type**(**Required**, string): Which flag to publish, one of `fpga_ready`, `ctrl_busy`, `ctrl_ready_for_data` (the FLAGS status register bits).
+- All other options from [Binary Sensor](https://esphome.io/components/binary_sensor/index.html#config-binary-sensor), including `update_interval` (defaults to `10s`).
 
 # writing esphome image
 `esptool --baud 1152000 write_flash 0x0000 .esphome/build/blah/.pioenvs/blah/firmware.factory.bin`

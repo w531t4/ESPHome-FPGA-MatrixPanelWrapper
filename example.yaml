@@ -25,6 +25,14 @@ display:
     width: 64
     height: 32
 
+    # Status readback SPI (optional): reads FPGA registers back over a second
+    # SPI bus. Requires an FPGA bitstream built with USE_STATUS_SPI and all
+    # three pins wired; omit all three to disable. Pin numbers are the ESP32
+    # side of the fpga_led_display top-level status pins.
+    # STATUS_SPI_SCK_pin: 1
+    # STATUS_SPI_CS_pin: 2
+    # STATUS_SPI_MISO_pin: 17
+
     lambda: |-
       it.print(0, 0, id(roboto), "Hello World!");
 
@@ -34,6 +42,23 @@ sensor:
     name: "Update Duration"
     id: matrix_update_duration
     update_interval: 20s
+
+# FPGA status flags, polled over the status readback SPI. Only useful when
+# the STATUS_SPI_*_pin options above are configured.
+# binary_sensor:
+#   - platform: fpga_matrix_display
+#     matrix_id: matrix
+#     name: "FPGA Ready"
+#     type: fpga_ready
+#     update_interval: 10s
+#   - platform: fpga_matrix_display
+#     matrix_id: matrix
+#     name: "FPGA Controller Busy"
+#     type: ctrl_busy
+#   - platform: fpga_matrix_display
+#     matrix_id: matrix
+#     name: "FPGA Ready For Data"
+#     type: ctrl_ready_for_data
     
 switch:
   - platform: fpga_matrix_display

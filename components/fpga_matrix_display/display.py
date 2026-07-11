@@ -26,6 +26,10 @@ SPI_MOSI_PIN = "SPI_MOSI_pin"
 FPGA_RESETSTATUS_PIN = "FPGA_RESETSTATUS_pin"
 FPGA_BUSY_PIN = "FPGA_BUSY_pin"
 
+STATUS_SPI_SCK_PIN = "STATUS_SPI_SCK_pin"
+STATUS_SPI_CS_PIN = "STATUS_SPI_CS_pin"
+STATUS_SPI_MISO_PIN = "STATUS_SPI_MISO_pin"
+
 SPISPEED = "spispeed"
 
 USE_CUSTOM_LIBRARY = "use_custom_library"
@@ -66,6 +70,11 @@ CONFIG_SCHEMA = display.FULL_DISPLAY_SCHEMA.extend(
         cv.Optional(SPI_MOSI_PIN, default=2): pins.gpio_output_pin_schema,
         cv.Optional(FPGA_RESETSTATUS_PIN, default=27): pins.gpio_input_pin_schema,
         cv.Optional(FPGA_BUSY_PIN, default=35): pins.gpio_input_pin_schema,
+        # Status readback SPI (FPGA reg_spi_responder). All three pins must be
+        # given together; omit all three to disable the feature.
+        cv.Inclusive(STATUS_SPI_SCK_PIN, "status_spi"): pins.gpio_output_pin_schema,
+        cv.Inclusive(STATUS_SPI_CS_PIN, "status_spi"): pins.gpio_output_pin_schema,
+        cv.Inclusive(STATUS_SPI_MISO_PIN, "status_spi"): pins.gpio_input_pin_schema,
         cv.Optional(SPISPEED): cv.enum(CLOCK_SPEEDS, upper=True, space="_"),
         cv.Optional(USE_WATCHDOG, default=True): cv.boolean,
         cv.Optional(WATCHDOG_INTERVAL_USEC, default=1000000): cv.positive_int,
@@ -80,7 +89,7 @@ CONFIG_SCHEMA = display.FULL_DISPLAY_SCHEMA.extend(
 async def to_code(config):
     if not config[USE_CUSTOM_LIBRARY]:
         cg.add_library(
-            "https://github.com/w531t4/ESP32-FPGA-MatrixPanel#v2.8.2",
+            "https://github.com/w531t4/ESP32-FPGA-MatrixPanel#v2.9.0",
             None,
         )
 
@@ -105,6 +114,18 @@ async def to_code(config):
             FPGA_BUSY_pin,
         )
     )
+    if STATUS_SPI_SCK_PIN in config:
+        STATUS_SPI_SCK_pin = await cg.gpio_pin_expression(config[STATUS_SPI_SCK_PIN])
+        STATUS_SPI_CS_pin = await cg.gpio_pin_expression(config[STATUS_SPI_CS_PIN])
+        STATUS_SPI_MISO_pin = await cg.gpio_pin_expression(config[STATUS_SPI_MISO_PIN])
+        cg.add(
+            var.set_status_pins(
+                STATUS_SPI_SCK_pin,
+                STATUS_SPI_CS_pin,
+                STATUS_SPI_MISO_pin,
+            )
+        )
+
     cg.add(var.set_initial_watchdog(config[USE_WATCHDOG]))
     cg.add(var.set_initial_watchdog_interval_usec(config[WATCHDOG_INTERVAL_USEC]))
     cg.add(var.set_worker_idle_timeout_ms(config[WORKER_IDLE_TIMEOUT_MS]))

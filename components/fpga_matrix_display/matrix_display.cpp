@@ -93,6 +93,11 @@ void MatrixDisplay::setup() {
         this->mark_failed();
         return;
     }
+    if (this->mxconfig_.status_gpio.sck >= 0 &&
+        !this->dma_display_->status_spi_available()) {
+        ESP_LOGW(TAG, "Status SPI pins configured but init failed; "
+                      "status sensors will not update");
+    }
 
     if (this->use_watchdog) {
         const esp_timer_create_args_t periodic_timer_args = {
@@ -166,10 +171,36 @@ void MatrixDisplay::dump_config() {
                   cfg.gpio.fpga_busy);
 
     ESP_LOGCONFIG(TAG, "  SPI Speed: %u MHz", (uint32_t)cfg.spispeed / 1000000);
+    ESP_LOGCONFIG(TAG,
+                  "  Status SPI pins: SCK:%i, CS:%i, MISO:%i (-1 = disabled)",
+                  cfg.status_gpio.sck, cfg.status_gpio.cs,
+                  cfg.status_gpio.miso);
+    // Distinguishes "second SPI bus never came up" (NO here) from "bus is up
+    // but reads fail frame validation" (YES here + failing status sensors).
+    ESP_LOGCONFIG(TAG, "  Status SPI ready: %s",
+                  this->dma_display_ != nullptr &&
+                          this->dma_display_->status_spi_available()
+                      ? "YES"
+                      : "NO");
     ESP_LOGCONFIG(TAG, "  Min Refresh Rate: %i", cfg.min_refresh_rate);
     ESP_LOGCONFIG(TAG, "  width: %i", cfg.mx_width);
     ESP_LOGCONFIG(TAG, "  height: %i", cfg.mx_height);
     ESP_LOGCONFIG(TAG, "  chain_length: %i", cfg.chain_length);
+}
+
+bool MatrixDisplay::read_status_flags(
+    MatrixPanel_FPGA_SPI::FpgaStatusFlags &out) {
+    if (this->dma_display_ == nullptr)
+        return false;
+    if (this->dma_display_->readFlags(out))
+        return true;
+    uint8_t frame[MatrixPanel_FPGA_SPI::STATUS_FRAME_LEN];
+    this->dma_display_->last_status_frame(frame);
+    ESP_LOGD(TAG, "status read failed: %s; last frame: %s",
+             MatrixPanel_FPGA_SPI::status_error_str(
+                 this->dma_display_->last_status_error()),
+             format_hex_pretty(frame, sizeof(frame)).c_str());
+    return false;
 }
 
 void MatrixDisplay::set_brightness(int brightness) {
