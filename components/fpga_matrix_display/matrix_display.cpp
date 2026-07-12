@@ -188,18 +188,31 @@ void MatrixDisplay::dump_config() {
     ESP_LOGCONFIG(TAG, "  chain_length: %i", cfg.chain_length);
 }
 
-bool MatrixDisplay::read_status_flags(
-    MatrixPanel_FPGA_SPI::FpgaStatusFlags &out) {
-    if (this->dma_display_ == nullptr)
-        return false;
-    if (this->dma_display_->readFlags(out))
-        return true;
+void MatrixDisplay::log_status_read_failure_() {
     uint8_t frame[MatrixPanel_FPGA_SPI::STATUS_FRAME_LEN];
     this->dma_display_->last_status_frame(frame);
     ESP_LOGD(TAG, "status read failed: %s; last frame: %s",
              MatrixPanel_FPGA_SPI::status_error_str(
                  this->dma_display_->last_status_error()),
              format_hex_pretty(frame, sizeof(frame)).c_str());
+}
+
+bool MatrixDisplay::read_status_flags(
+    MatrixPanel_FPGA_SPI::FpgaStatusFlags &out) {
+    if (this->dma_display_ == nullptr)
+        return false;
+    if (this->dma_display_->readFlags(out))
+        return true;
+    this->log_status_read_failure_();
+    return false;
+}
+
+bool MatrixDisplay::read_status_value(uint8_t addr, uint64_t &out) {
+    if (this->dma_display_ == nullptr)
+        return false;
+    if (this->dma_display_->readStatus(addr, out))
+        return true;
+    this->log_status_read_failure_();
     return false;
 }
 

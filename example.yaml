@@ -42,6 +42,12 @@ sensor:
     name: "Update Duration"
     id: matrix_update_duration
     update_interval: 20s
+  # Rolling kB/s received by the FPGA, via the status readback SPI. Only
+  # useful when the STATUS_SPI_*_pin options above are configured.
+  # - platform: fpga_matrix_display
+  #   matrix_id: matrix
+  #   type: rx_kbps
+  #   name: "FPGA RX Rate"
 
 # FPGA status flags, polled over the status readback SPI. Only useful when
 # the STATUS_SPI_*_pin options above are configured.
