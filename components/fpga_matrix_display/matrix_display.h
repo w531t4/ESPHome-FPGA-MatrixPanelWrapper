@@ -190,6 +190,13 @@ class MatrixDisplay : public display::DisplayBuffer {
     bool read_status_flags(MatrixPanel_FPGA_SPI::FpgaStatusFlags &out);
 
     /**
+     * Reads one FPGA status register over the status SPI. Same semantics and
+     * failure logging as read_status_flags; addr is a
+     * MatrixPanel_FPGA_SPI::STATUS_ADDR_* constant.
+     */
+    bool read_status_value(uint8_t addr, uint64_t &out);
+
+    /**
      * Sets the clock speed
      *
      * @param speed i2s clock speed
@@ -254,6 +261,10 @@ class MatrixDisplay : public display::DisplayBuffer {
     void run_test_state_sequence_();
 
   protected:
+    /// @brief Logs the library's failure reason and raw frame after a failed
+    /// status read (callers guarantee dma_display_ is non-null).
+    void log_status_read_failure_();
+
     /// @brief Wrapped matrix display
     MatrixPanel_FPGA_SPI *dma_display_ = nullptr;
 
