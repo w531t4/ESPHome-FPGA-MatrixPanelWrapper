@@ -216,6 +216,15 @@ bool MatrixDisplay::read_status_value(uint8_t addr, uint64_t &out) {
     return false;
 }
 
+bool MatrixDisplay::read_version(MatrixPanel_FPGA_SPI::FpgaVersion &out) {
+    if (this->dma_display_ == nullptr)
+        return false;
+    if (this->dma_display_->readVersion(out))
+        return true;
+    this->log_status_read_failure_();
+    return false;
+}
+
 void MatrixDisplay::set_brightness(int brightness) {
     // Wrap brightness function
     brightness = clamp(brightness, 0, 255);

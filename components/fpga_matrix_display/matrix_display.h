@@ -197,6 +197,12 @@ class MatrixDisplay : public display::DisplayBuffer {
     bool read_status_value(uint8_t addr, uint64_t &out);
 
     /**
+     * Reads and decodes the FPGA gateware version register. Same semantics and
+     * failure logging as read_status_flags.
+     */
+    bool read_version(MatrixPanel_FPGA_SPI::FpgaVersion &out);
+
+    /**
      * Sets the clock speed
      *
      * @param speed i2s clock speed

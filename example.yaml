@@ -42,8 +42,9 @@ sensor:
     name: "Update Duration"
     id: matrix_update_duration
     update_interval: 20s
-  # Rolling kB/s received by the FPGA, via the status readback SPI. Only
-  # useful when the STATUS_SPI_*_pin options above are configured.
+  # Numeric FPGA status registers, via the status readback SPI. Only useful
+  # when the STATUS_SPI_*_pin options above are configured. Available types:
+  # rx_kbps, hub75_fps, fb_fps, uptime (see README).
   # - platform: fpga_matrix_display
   #   matrix_id: matrix
   #   type: rx_kbps
@@ -65,7 +66,13 @@ sensor:
 #     matrix_id: matrix
 #     name: "FPGA Ready For Data"
 #     type: ctrl_ready_for_data
-    
+
+# Decoded FPGA gateware version, e.g. "v1.2.3+45.sha1a2b3c4d-dirty".
+# text_sensor:
+#   - platform: fpga_matrix_display
+#     matrix_id: matrix
+#     name: "FPGA Gateware Version"
+
 switch:
   - platform: fpga_matrix_display
     matrix_id: matrix
