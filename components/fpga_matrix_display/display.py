@@ -89,7 +89,7 @@ CONFIG_SCHEMA = display.FULL_DISPLAY_SCHEMA.extend(
 async def to_code(config):
     if not config[USE_CUSTOM_LIBRARY]:
         cg.add_library(
-            "https://github.com/w531t4/ESP32-FPGA-MatrixPanel#v2.10.0",
+            "https://github.com/w531t4/ESP32-FPGA-MatrixPanel#v2.11.1",
             None,
         )
 

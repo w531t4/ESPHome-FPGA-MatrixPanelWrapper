@@ -101,10 +101,25 @@ This number entity can be used to set the display brightness. In combination wit
 
 ## Sensor
 
-Reports the moving average duration of display updates in microseconds.
+One platform with a `type:` selector. `update_duration` is measured on the ESP32; all other types poll a numeric FPGA status register over the status readback SPI at their `update_interval` (requires the `STATUS_SPI_*` pins; when a read fails, the sensor keeps its last state).
 
-- **matrix_id**(**Required**, string): The matrix display entity this sensor measures.
-- All other options from [Sensor](https://esphome.io/components/sensor/index.html#config-sensor), including `update_interval` (defaults to `60s`).
+```yaml
+sensor:
+  - platform: fpga_matrix_display
+    matrix_id: matrix
+    type: rx_kbps
+    name: "FPGA RX Rate"
+    update_interval: 10s
+```
+
+- **matrix_id**(**Required**, string): The matrix display entity this sensor reads from.
+- **type**(**Optional**, string): What to report. Defaults to `update_duration`.
+  - `update_duration`: moving average duration of display updates, µs (default interval `60s`).
+  - `rx_kbps`: rolling kilobytes/s received by the FPGA from the ESP32 (`10s`).
+  - `hub75_fps`: HUB75 frame-emit rate in Hz, 5 s sliding average (`10s`).
+  - `fb_fps`: framebuffer swap rate in Hz, 5 s average; reads 0 unless the FPGA is built with double buffering (`10s`).
+  - `uptime`: whole seconds since the FPGA came out of reset (`60s`).
+- All other options from [Sensor](https://esphome.io/components/sensor/index.html#config-sensor), including `update_interval`.
 
 ## Status Binary Sensor
 
@@ -122,6 +137,20 @@ binary_sensor:
 - **matrix_id**(**Required**, string): The matrix display entity this sensor reads from.
 - **type**(**Required**, string): Which flag to publish, one of `fpga_ready`, `ctrl_busy`, `ctrl_ready_for_data` (the FLAGS status register bits).
 - All other options from [Binary Sensor](https://esphome.io/components/binary_sensor/index.html#config-binary-sensor), including `update_interval` (defaults to `10s`).
+
+## Version Text Sensor
+
+Polls the FPGA gateware version register (`STATUS_ADDR_VERSION`) over the status readback SPI and publishes the decoded string, git-describe style. An exact, clean tagged build shows just `vmajor.minor.patch` (e.g. `v1.2.3`); anything else appends `+commits.shaGITSHA` and a `-dirty` suffix when the gateware was built from a dirty working tree (e.g. `v1.2.3+45.sha1a2b3c4d-dirty`). Requires the `STATUS_SPI_*` pins; when a read fails, the sensor keeps its last state. Decoding/formatting is done in the panel library (`readVersion`/`formatVersion`).
+
+```yaml
+text_sensor:
+  - platform: fpga_matrix_display
+    matrix_id: matrix
+    name: "FPGA Gateware Version"
+```
+
+- **matrix_id**(**Required**, string): The matrix display entity this sensor reads from.
+- All other options from [Text Sensor](https://esphome.io/components/text_sensor/index.html#config-text-sensor), including `update_interval` (defaults to `60s`; the version is static per boot but can change on a remote reflash).
 
 # writing esphome image
 `esptool --baud 1152000 write_flash 0x0000 .esphome/build/blah/.pioenvs/blah/firmware.factory.bin`
